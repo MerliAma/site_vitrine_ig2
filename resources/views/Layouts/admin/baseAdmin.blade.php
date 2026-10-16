@@ -15,11 +15,16 @@
 	<link rel="stylesheet" href="{{asset('template/css/main.css')}}">
 	<!-- FOR DEMO PURPOSES ONLY. You should remove this in your project 
 	<link rel="stylesheet" href="{{asset('template/css/demo.css')}}">-->
-	<!-- GOOGLE FONTS -->
-	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+	<!-- GOOGLE FONTS : DM Sans & Inter (DEC-007) -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<!-- ICONS -->
 	<link rel="apple-touch-icon" sizes="76x76" href="{{asset('template/img/2.png')}}">
 	<link rel="icon" type="image/png" sizes="96x96" href="{{asset('template/img/2.png')}}">
+
+	<!-- SYSTÈME DE DESIGN INTER-GROUPE -->
+	<link rel="stylesheet" href="{{asset('css/design-system.css')}}">
 
 	<!--SWEET ALERT
 	<script src="{{asset('sweetAlert/sweetalert.min.js')}}"> </script>-->
@@ -31,11 +36,10 @@
 	<div id="wrapper">
 		<!-- NAVBAR -->
 		<nav class="navbar navbar-default navbar-fixed-top">  
-			<style> /*#img{width:30%; margin-top:-40px; margin-bottom:-40px;} .navbar-form{margin-left:-165px;} .navbar-btn{margin-left:-200px;}*/ 
-				.brand{ color:#3cd80d; font-size:30px;} .brand span{ color:#4c504b;}
-			</style>
 			<div class="brand">
-				<span>INTER-</span>GROUPE
+				<a href="{{route('accueilAd')}}" class="ig-brand" title="INTER-GROUPE Administration">
+					<span>INTER-</span>GROUPE
+				</a>
 			</div>
 			<div class="container-fluid barre">
 				<div class="navbar-btn">
@@ -130,8 +134,8 @@
         <!--END MAIN-->
 		<div class="clearfix"></div>
 		<footer>
-			<div class="container-fluid">
-				<p class="copyright">&copy; 2017 <a href="https://www.themeineed.com" target="_blank">Theme I Need</a>. All Rights Reserved.</p>
+			<div class="container-fluid text-center">
+				<p class="copyright mb-0" style="font-size: 0.875rem; color: var(--ig-text-muted, #64748B);">&copy; {{ date('Y') }} <strong>INTER-GROUPE</strong> — Espace Administration. Tous droits réservés.</p>
 			</div>
 		</footer>
 	</div>

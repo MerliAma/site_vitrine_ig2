@@ -22,9 +22,6 @@ Route::get('/presentation', function () {
     return view('presentation');  
 })->name('presentation');
 
-Route::get('/formation', function () {
-    return view('formation');  
-})->name('formation');
 
 Route::get('/developpement', function () {
     return view('developpement');  

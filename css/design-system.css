@@ -1,0 +1,730 @@
+/**
+ * ==============================================================================
+ * INTER-GROUPE — SYSTÈME DE DESIGN & COMPOSANTS PARTAGÉS
+ * Lot 2 : Fondations visuelles, tokens CSS et composants réutilisables
+ * Conforme : Décision DEC-007, Bootstrap 4.x, WCAG AA
+ * ==============================================================================
+ */
+
+/* ==============================================================================
+   1. TOKENS DE DESIGN (:root)
+   ============================================================================== */
+:root {
+    /* Palette institutionnelle INTER-GROUPE (DEC-007) */
+    --ig-primary: #0A6E3F;          /* Vert institutionnel foncé (autorité, logo ITG) */
+    --ig-primary-dark: #07522E;     /* Vert survol sombre */
+    --ig-primary-light: #0D8B50;    /* Vert clair / focus */
+    --ig-on-primary: #FFFFFF;
+
+    --ig-accent: #1DB560;           /* Vert dynamique d'action / CTA principal */
+    --ig-accent-hover: #17964F;     /* Survol bouton action */
+    --ig-on-accent: #FFFFFF;
+
+    --ig-secondary: #1A3A6B;        /* Bleu marine institutionnel (titres, confiance) */
+    --ig-secondary-dark: #12284B;   /* Bleu sombre */
+    --ig-secondary-light: #244E8F;  /* Bleu survol */
+    --ig-on-secondary: #FFFFFF;
+
+    /* Surfaces & Arrière-plans */
+    --ig-bg: #F8FAFC;               /* Fond de page sobre et lumineux */
+    --ig-surface: #FFFFFF;          /* Fond des cartes, conteneurs, modales */
+    --ig-surface-muted: #F1F5F9;    /* Fond des en-têtes neutres, bandeaux */
+    --ig-surface-hover: #E2E8F0;    /* Fond au survol neutre */
+
+    /* Couleurs de texte & Lisibilité (WCAG AAA) */
+    --ig-text: #1E293B;             /* Texte principal (contraste 12.8:1 sur blanc) */
+    --ig-text-muted: #64748B;       /* Texte secondaire / libellés d'aide (4.6:1) */
+    --ig-text-light: #94A3B8;       /* Métadonnées discrètes */
+    --ig-text-inverse: #FFFFFF;     /* Texte sur fond sombre */
+
+    /* Bordures & Séparateurs */
+    --ig-border: #E2E8F0;           /* Bordure par défaut */
+    --ig-border-strong: #CBD5E1;    /* Bordure renforcée / champs */
+    --ig-border-focus: #1DB560;     /* Bordure au focus */
+
+    /* Couleurs de statut */
+    --ig-success: #16A34A;          /* Validation / Lu / Traité */
+    --ig-success-bg: #F0FDF4;
+    --ig-success-border: #BBF7D0;
+    --ig-success-text: #14532D;
+
+    --ig-warning: #D97706;          /* Attention / En attente */
+    --ig-warning-bg: #FFFBEB;
+    --ig-warning-border: #FDE68A;
+    --ig-warning-text: #78350F;
+
+    --ig-danger: #DC2626;           /* Erreur / Suppression / Non lu */
+    --ig-danger-bg: #FEF2F2;
+    --ig-danger-border: #FECACA;
+    --ig-danger-text: #7F1D1D;
+
+    --ig-info: #2563EB;             /* Information / Modules */
+    --ig-info-bg: #EFF6FF;
+    --ig-info-border: #BFDBFE;
+    --ig-info-text: #1E3A8A;
+
+    /* Anneau de focus accessible */
+    --ig-focus-ring: rgba(29, 181, 96, 0.4);
+    --ig-focus-ring-danger: rgba(220, 38, 38, 0.3);
+
+    /* Typographie */
+    --ig-font-heading: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --ig-font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    /* Échelle d'espacements */
+    --ig-space-xs: 0.25rem;         /* 4px */
+    --ig-space-sm: 0.5rem;          /* 8px */
+    --ig-space-md: 1rem;            /* 16px */
+    --ig-space-lg: 1.5rem;          /* 24px */
+    --ig-space-xl: 2rem;            /* 32px */
+    --ig-space-2xl: 3rem;           /* 48px */
+    --ig-space-3xl: 4rem;           /* 64px */
+
+    /* Rayons de bordure */
+    --ig-radius-sm: 4px;
+    --ig-radius-md: 8px;
+    --ig-radius-lg: 12px;
+    --ig-radius-xl: 16px;
+    --ig-radius-full: 9999px;
+
+    /* Ombres subtiles et progressives */
+    --ig-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
+    --ig-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+    --ig-shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -1px rgba(15, 23, 42, 0.04);
+    --ig-shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
+    --ig-shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+
+    /* Transitions */
+    --ig-transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==============================================================================
+   2. FONDATIONS GLOBALES & TYPOGRAPHIE
+   ============================================================================== */
+html {
+    box-sizing: border-box;
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+body {
+    font-family: var(--ig-font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--ig-text);
+    background-color: var(--ig-bg);
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hiérarchie typographique avec DM Sans pour les titres */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: var(--ig-font-heading);
+    color: var(--ig-secondary);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-top: 0;
+    margin-bottom: var(--ig-space-md);
+    letter-spacing: -0.015em;
+}
+
+h1, .h1 { font-size: 2.25rem; font-weight: 800; }
+h2, .h2 { font-size: 1.75rem; }
+h3, .h3 { font-size: 1.375rem; }
+h4, .h4 { font-size: 1.125rem; }
+h5, .h5 { font-size: 1rem; }
+h6, .h6 { font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+p {
+    margin-top: 0;
+    margin-bottom: var(--ig-space-md);
+    max-width: 75ch; /* Lisibilité optimale */
+}
+
+a {
+    color: var(--ig-primary);
+    text-decoration: none;
+    transition: color var(--ig-transition);
+}
+
+a:hover, a:focus {
+    color: var(--ig-primary-dark);
+    text-decoration: underline;
+}
+
+/* Focus accessible universel (WCAG AA) */
+:focus-visible {
+    outline: 2px solid var(--ig-primary);
+    outline-offset: 2px;
+}
+
+/* Masquage accessible pour lecteurs d'écran */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Marque INTER-GROUPE harmonisée (remplace les <style> inline) */
+.brand, .ig-brand {
+    font-family: var(--ig-font-heading);
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--ig-primary);
+    letter-spacing: -0.5px;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none !important;
+}
+
+.brand span, .ig-brand span {
+    color: var(--ig-secondary);
+}
+
+/* ==============================================================================
+   3. COMPOSANT BOUTONS
+   ============================================================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--ig-font-heading);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    padding: 0.625rem 1.25rem;
+    min-height: 44px; /* Cible tactile confortable mobile/desktop */
+    border-radius: var(--ig-radius-md);
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none !important;
+    transition: background-color var(--ig-transition), border-color var(--ig-transition), box-shadow var(--ig-transition), transform var(--ig-transition);
+    gap: var(--ig-space-sm);
+    white-space: nowrap;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn:disabled, .btn.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* Bouton Primaire (Vert institutionnel foncé) */
+.btn-primary, .btn-ig-primary {
+    background-color: var(--ig-primary);
+    border-color: var(--ig-primary);
+    color: var(--ig-on-primary) !important;
+    box-shadow: var(--ig-shadow-xs);
+}
+
+.btn-primary:hover, .btn-ig-primary:hover {
+    background-color: var(--ig-primary-dark);
+    border-color: var(--ig-primary-dark);
+    color: var(--ig-on-primary) !important;
+    box-shadow: var(--ig-shadow-sm);
+}
+
+.btn-primary:focus, .btn-ig-primary:focus {
+    box-shadow: 0 0 0 3px var(--ig-focus-ring);
+}
+
+/* Bouton Accent / Action CTA (Vert dynamique) */
+.btn-success, .btn-accent, .btn-ig-accent {
+    background-color: var(--ig-accent);
+    border-color: var(--ig-accent);
+    color: var(--ig-on-accent) !important;
+    box-shadow: var(--ig-shadow-xs);
+}
+
+.btn-success:hover, .btn-accent:hover, .btn-ig-accent:hover {
+    background-color: var(--ig-accent-hover);
+    border-color: var(--ig-accent-hover);
+    color: var(--ig-on-accent) !important;
+    box-shadow: var(--ig-shadow-sm);
+}
+
+.btn-success:focus, .btn-accent:focus, .btn-ig-accent:focus {
+    box-shadow: 0 0 0 3px var(--ig-focus-ring);
+}
+
+/* Bouton Secondaire (Bleu marine) */
+.btn-secondary, .btn-ig-secondary {
+    background-color: var(--ig-secondary);
+    border-color: var(--ig-secondary);
+    color: var(--ig-on-secondary) !important;
+    box-shadow: var(--ig-shadow-xs);
+}
+
+.btn-secondary:hover, .btn-ig-secondary:hover {
+    background-color: var(--ig-secondary-dark);
+    border-color: var(--ig-secondary-dark);
+    color: var(--ig-on-secondary) !important;
+    box-shadow: var(--ig-shadow-sm);
+}
+
+.btn-secondary:focus, .btn-ig-secondary:focus {
+    box-shadow: 0 0 0 3px rgba(26, 58, 107, 0.35);
+}
+
+/* Boutons Contours (Outline) */
+.btn-outline-primary {
+    background-color: transparent;
+    border-color: var(--ig-primary);
+    color: var(--ig-primary) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--ig-primary);
+    border-color: var(--ig-primary);
+    color: var(--ig-on-primary) !important;
+}
+
+.btn-outline-success, .btn-outline-accent {
+    background-color: transparent;
+    border-color: var(--ig-accent);
+    color: var(--ig-accent) !important;
+}
+
+.btn-outline-success:hover, .btn-outline-accent:hover {
+    background-color: var(--ig-accent);
+    border-color: var(--ig-accent);
+    color: var(--ig-on-accent) !important;
+}
+
+.btn-outline-secondary {
+    background-color: transparent;
+    border-color: var(--ig-secondary);
+    color: var(--ig-secondary) !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--ig-secondary);
+    border-color: var(--ig-secondary);
+    color: var(--ig-on-secondary) !important;
+}
+
+/* Bouton Danger / Destructif */
+.btn-danger {
+    background-color: var(--ig-danger);
+    border-color: var(--ig-danger);
+    color: var(--ig-text-inverse) !important;
+}
+
+.btn-danger:hover {
+    background-color: #B91C1C;
+    border-color: #B91C1C;
+    color: var(--ig-text-inverse) !important;
+}
+
+.btn-danger:focus {
+    box-shadow: 0 0 0 3px var(--ig-focus-ring-danger);
+}
+
+/* Tailles de boutons */
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    min-height: 36px;
+    font-size: 0.8125rem;
+}
+
+.btn-lg {
+    padding: 0.75rem 1.75rem;
+    min-height: 50px;
+    font-size: 1.0625rem;
+}
+
+/* ==============================================================================
+   4. COMPOSANT FORMULAIRES
+   ============================================================================== */
+.form-group {
+    margin-bottom: var(--ig-space-lg);
+}
+
+label, .control-label {
+    font-family: var(--ig-font-heading);
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--ig-text);
+    margin-bottom: var(--ig-space-xs);
+    display: inline-block;
+}
+
+.required-star, .etoile {
+    color: var(--ig-danger);
+    font-weight: 700;
+    margin-left: 2px;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.5rem 0.875rem;
+    font-family: var(--ig-font-body);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--ig-text);
+    background-color: var(--ig-surface);
+    background-clip: padding-box;
+    border: 1px solid var(--ig-border-strong);
+    border-radius: var(--ig-radius-md);
+    transition: border-color var(--ig-transition), box-shadow var(--ig-transition);
+}
+
+.form-control:focus {
+    color: var(--ig-text);
+    background-color: var(--ig-surface);
+    border-color: var(--ig-primary);
+    outline: 0;
+    box-shadow: 0 0 0 3px var(--ig-focus-ring);
+}
+
+.form-control::placeholder {
+    color: var(--ig-text-light);
+    opacity: 1;
+}
+
+.form-control:disabled, .form-control[readonly] {
+    background-color: var(--ig-surface-muted);
+    border-color: var(--ig-border);
+    color: var(--ig-text-muted);
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+textarea.form-control {
+    min-height: 100px;
+}
+
+/* Textes d'aide */
+.form-text, .help-block {
+    display: block;
+    margin-top: var(--ig-space-xs);
+    font-size: 0.8125rem;
+    color: var(--ig-text-muted);
+}
+
+/* États d'erreur de validation Laravel */
+.is-invalid, .has-error .form-control {
+    border-color: var(--ig-danger) !important;
+}
+
+.is-invalid:focus, .has-error .form-control:focus {
+    box-shadow: 0 0 0 3px var(--ig-focus-ring-danger) !important;
+}
+
+.invalid-feedback, .text-danger, .has-error .help-block {
+    color: var(--ig-danger);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    margin-top: var(--ig-space-xs);
+    display: block;
+}
+
+/* Checkbox & Radio harmonisés */
+.form-check {
+    position: relative;
+    display: block;
+    padding-left: 1.5rem;
+    margin-bottom: var(--ig-space-sm);
+}
+
+.form-check-input {
+    position: absolute;
+    margin-top: 0.3rem;
+    margin-left: -1.5rem;
+    cursor: pointer;
+}
+
+.form-check-label {
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    color: var(--ig-text);
+}
+
+/* ==============================================================================
+   5. COMPOSANT CARTES & PANNEAUX
+   ============================================================================== */
+.card, .panel, .ig-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: var(--ig-surface);
+    border: 1px solid var(--ig-border);
+    border-radius: var(--ig-radius-lg);
+    box-shadow: var(--ig-shadow-sm);
+    margin-bottom: var(--ig-space-lg);
+    overflow: hidden;
+    transition: transform var(--ig-transition), box-shadow var(--ig-transition);
+}
+
+.card-header, .panel-heading {
+    padding: var(--ig-space-md) var(--ig-space-lg);
+    margin-bottom: 0;
+    background-color: var(--ig-surface-muted);
+    border-bottom: 1px solid var(--ig-border);
+    font-family: var(--ig-font-heading);
+    font-weight: 700;
+    color: var(--ig-secondary);
+}
+
+.panel-title, .card-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    color: var(--ig-secondary);
+}
+
+.card-body, .panel-body {
+    flex: 1 1 auto;
+    padding: var(--ig-space-lg);
+}
+
+.card-footer, .panel-footer {
+    padding: var(--ig-space-sm) var(--ig-space-lg);
+    background-color: var(--ig-surface-muted);
+    border-top: 1px solid var(--ig-border);
+}
+
+/* Carte interactive avec survol léger */
+.card-hoverable:hover, .ig-card-interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ig-shadow-md);
+}
+
+/* ==============================================================================
+   6. COMPOSANT ALERTES & MESSAGES FLASH
+   ============================================================================== */
+.alert {
+    position: relative;
+    padding: var(--ig-space-md) var(--ig-space-lg);
+    margin-bottom: var(--ig-space-lg);
+    border: 1px solid transparent;
+    border-left-width: 4px;
+    border-radius: var(--ig-radius-md);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    box-shadow: var(--ig-shadow-xs);
+}
+
+.alert-success {
+    background-color: var(--ig-success-bg);
+    border-color: var(--ig-success-border);
+    border-left-color: var(--ig-success);
+    color: var(--ig-success-text);
+}
+
+.alert-danger {
+    background-color: var(--ig-danger-bg);
+    border-color: var(--ig-danger-border);
+    border-left-color: var(--ig-danger);
+    color: var(--ig-danger-text);
+}
+
+.alert-warning {
+    background-color: var(--ig-warning-bg);
+    border-color: var(--ig-warning-border);
+    border-left-color: var(--ig-warning);
+    color: var(--ig-warning-text);
+}
+
+.alert-info {
+    background-color: var(--ig-info-bg);
+    border-color: var(--ig-info-border);
+    border-left-color: var(--ig-info);
+    color: var(--ig-info-text);
+}
+
+.alert .close {
+    font-size: 1.25rem;
+    opacity: 0.6;
+    transition: opacity var(--ig-transition);
+}
+
+.alert .close:hover {
+    opacity: 1;
+}
+
+/* ==============================================================================
+   7. COMPOSANT BADGES & STATUTS
+   ============================================================================== */
+.badge, .label {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    font-family: var(--ig-font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: var(--ig-radius-full);
+    letter-spacing: 0.025em;
+}
+
+.badge-success, .label-success, .badge-status-lu {
+    background-color: var(--ig-success-bg);
+    color: var(--ig-success-text);
+    border: 1px solid var(--ig-success-border);
+}
+
+.badge-danger, .label-danger, .badge-status-nonlu {
+    background-color: var(--ig-danger-bg);
+    color: var(--ig-danger-text);
+    border: 1px solid var(--ig-danger-border);
+}
+
+.badge-warning, .label-warning, .badge-status-attente {
+    background-color: var(--ig-warning-bg);
+    color: var(--ig-warning-text);
+    border: 1px solid var(--ig-warning-border);
+}
+
+.badge-info, .label-info, .badge-status-info {
+    background-color: var(--ig-info-bg);
+    color: var(--ig-info-text);
+    border: 1px solid var(--ig-info-border);
+}
+
+.badge-secondary, .label-default {
+    background-color: var(--ig-surface-muted);
+    color: var(--ig-text-muted);
+    border: 1px solid var(--ig-border);
+}
+
+/* ==============================================================================
+   8. COMPOSANT TABLEAUX (BACK-OFFICE & LISTES)
+   ============================================================================== */
+.table {
+    width: 100%;
+    margin-bottom: var(--ig-space-lg);
+    color: var(--ig-text);
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.9375rem;
+}
+
+.table th, .table td {
+    padding: 0.875rem 1rem;
+    vertical-align: middle;
+    border-top: 1px solid var(--ig-border);
+}
+
+.table thead th {
+    background-color: var(--ig-surface-muted);
+    color: var(--ig-secondary);
+    font-family: var(--ig-font-heading);
+    font-weight: 700;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-top: 0;
+    border-bottom: 2px solid var(--ig-border);
+    white-space: nowrap;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(248, 250, 252, 0.7);
+}
+
+.table-hover tbody tr {
+    transition: background-color var(--ig-transition);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(10, 110, 63, 0.04);
+}
+
+/* ==============================================================================
+   9. COMPOSANT MODALES & CONFIRMATIONS
+   ============================================================================== */
+.modal-content {
+    background-color: var(--ig-surface);
+    border: 1px solid var(--ig-border);
+    border-radius: var(--ig-radius-lg);
+    box-shadow: var(--ig-shadow-xl);
+    outline: 0;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--ig-space-md) var(--ig-space-lg);
+    border-bottom: 1px solid var(--ig-border);
+    background-color: var(--ig-surface-muted);
+}
+
+.modal-title {
+    margin-bottom: 0;
+    font-family: var(--ig-font-heading);
+    font-weight: 700;
+    color: var(--ig-secondary);
+    font-size: 1.25rem;
+}
+
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: var(--ig-space-lg);
+}
+
+.modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: var(--ig-space-md) var(--ig-space-lg);
+    border-top: 1px solid var(--ig-border);
+    gap: var(--ig-space-sm);
+}
+
+/* SweetAlert2 harmonisé avec les boutons du design system */
+.swal2-popup {
+    border-radius: var(--ig-radius-lg) !important;
+    font-family: var(--ig-font-body) !important;
+}
+
+.swal2-title {
+    font-family: var(--ig-font-heading) !important;
+    color: var(--ig-secondary) !important;
+}
+
+.swal2-actions .btn {
+    margin: 0 0.375rem !important;
+}
+
+/* ==============================================================================
+   10. ACCESSIBILITÉ & MOTION CONSCIOUS
+   ============================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
