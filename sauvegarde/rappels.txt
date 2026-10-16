@@ -1,0 +1,6 @@
+le lien doit être parlant
+Masque de saisie
+Mettre l'année dans le champs année d'embauche
+mettre des icones uniquement dans les boutons
+etat: en cours / traité
+Créer la bd en ligne avant d’héberger
