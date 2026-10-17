@@ -1,144 +1,147 @@
-@extends('Layouts/admin/baseAdmin',['title'=>'Nouvel Utilisateur'])
-
-@section('navactive')
-<ul class="nav">
-	<li><a href="{{route('accueilAd')}}" class=""><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
-	<li>
-		<a href="#subPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i> <span>Demandes</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-		<div id="subPages" class="collapse ">
-			<ul class="nav">
-				<li><a href="{{route('dmdForm')}}" class="">Formations</a></li>
-				<li><a href="{{route('dmdPrest')}}" class="">Prestations</a></li>
-			</ul>
-		</div>
-	</li>
-	<li><a href="{{route('domForm')}}" class=""><i class="lnr lnr-laptop"></i> <span>Domaines Formations</span></a></li>
-	<li><a href="{{route('typePr')}}" class=""><i class="lnr lnr-code"></i> <span>Types Prestations</span></a></li>
-    <li><a href="{{route('suggestions')}}" class=""><i class="lnr lnr-alarm"></i> <span>Suggestions</span></a></li>
-    <li><a href="{{route('evenements')}}" class=""><i class="lnr lnr-calendar-full"></i> <span>Evènements</span></a></li>
-    <?php
-	use App\role;
-	$idAdmin=role::where('libelle','Admin')->get();
-	if(Auth::user()->role_id==$idAdmin[0]->id)
-	{ ?>
-	<li><a href="{{route('user')}}" class="active"><i class="lnr lnr-users"></i> <span>Utilisateurs</span></a></li>
-	<?php 
-	}
-	?>
-</ul>
-@endsection
+@extends('Layouts/admin/baseAdmin', ['title' => 'Nouvel Utilisateur'])
 
 @section('contenu')
-<!-- MAIN -->
+<?php
+    use App\role;
+    $role = role::all();
+    $mode = $_GET['mode'] ?? 'Ajouter';
+    $idUser = null;
+?>
 <div class="main">
-			<!-- MAIN CONTENT -->
-			<div class="main-content">
-				<div class="container-fluid">
-                <?php
-                    use App\User;
-                    use App\suggestion;
-                    $role=role::all();
+    <div class="main-content">
+        <div class="container-fluid">
+            <!-- Header de page -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+                <div>
+                    <h2 class="h3 font-weight-bold text-dark mb-1">Création d'un Compte Utilisateur</h2>
+                    <p class="text-muted mb-0">Définissez les identifiants et le niveau d'habilitation au backoffice</p>
+                </div>
+                <div class="mt-3 mt-md-0">
+                    <a href="{{ route('user') }}" class="btn btn-outline-secondary">
+                        <i class="lnr lnr-arrow-left mr-1"></i> Retour aux utilisateurs
+                    </a>
+                </div>
+            </div>
 
-                    $nbSugNonLu=suggestion::where('boolSug','0')->count();
-                    $idUser=null;
-                    $actionNewU="Ajout d'un nouvel Utilisateur";
-                ?>
-					<h3 class="page-title"><?php if(isset($actionNewU)) {echo $actionNewU;} ?></h3> 
-					<div class="row">
-					<div class="panel-body">
-                        @if($errors->has('password'))
-                            <div class="alert alert-warning alert-danger" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                Les Mots de passe ne sont pas identiques ou la taille minimum non respectée.
-                            </div>
-                        @endif
-                        @if($errors->has('telUser'))
-                            <div class="alert alert-warning alert-danger" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                Erreur sur le N° de téléphone!
-                            </div>
-                        @endif
-                        @if($errors->has('email'))
-                            <div class="alert alert-warning alert-danger" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                Erreur sur l'Email!
-                            </div>
-                        @endif
-                    
-						<div class="col-md-12"> <!--une class "formulaire" en suspend-->
-                            <!--<div class="panel">-->
-                           
-                                <form  action="{{route('newUser2','mode='.$_GET['mode'].'&idUser='.$idUser)}}" method="post">
+            <!-- Messages d'erreur de validation Blade -->
+            @if($errors->has('password'))
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
+                    <i class="lnr lnr-warning mr-2"></i> Les mots de passe ne sont pas identiques ou la taille minimale (6 caractères) n'est pas respectée.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+
+            @if($errors->has('telUser'))
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
+                    <i class="lnr lnr-warning mr-2"></i> Le format du numéro de téléphone est invalide.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+
+            @if($errors->has('email'))
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
+                    <i class="lnr lnr-warning mr-2"></i> Cette adresse email est invalide ou déjà utilisée par un autre compte.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+
+            <!-- Formulaire -->
+            <div class="row">
+                <div class="col-lg-8 col-md-10">
+                    <div class="card border-0 shadow-sm" style="border-radius: var(--ig-radius-lg, 12px);">
+                        <div class="card-header bg-white border-bottom py-3">
+                            <h5 class="mb-0 font-weight-bold text-dark">
+                                <i class="lnr lnr-user mr-2 text-primary"></i> Informations du Profil
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form action="{{ route('newUser2', 'mode='.$mode.'&idUser='.$idUser) }}" method="post">
                                 @csrf
-                                    <!--<div class="form-group">
-                                        <label for="Input1">Identifiant</label>
-                                        <input type="text" class="form-control" id="Input1" placeholder="" name="idUser">
+                                <div class="row">
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label for="name" class="font-weight-bold text-dark">
+                                            Nom et Prénoms <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="name" name="name" 
+                                               value="{{ old('name') }}" placeholder="Ex : KOUAME Jean-Luc" required>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="Input2">Noms et Prénoms</label>
-                                        <input type="text" class="form-control" id="Input2" placeholder="Nom Prénoms" name="name" required="required" value="{{old('name')}}">
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label for="telUser" class="font-weight-bold text-dark">
+                                            Téléphone <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="telUser" name="telUser" 
+                                               value="{{ old('telUser') }}" placeholder="Ex : 0708091011" required>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="Input3">Téléphone</label>
-                                        <input type="number" class="form-control" id="Input3" placeholder="05050505" name="telUser" required="required" value="{{old('telUser')}}">
-                                    </div>-->
-                                    
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label for="Input2" class="text-info">Noms et Prénoms</label>
-                                            <input type="text" class="form-control" id="Input2" placeholder="Nom Prénoms" name="name" required="required" value="{{old('name')}}">
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="Input3" class="text-info">Téléphone</label>
-                                            <input type="number" class="form-control" id="Input3" placeholder="0102030405" name="telUser" required="required" value="{{old('telUser')}}">
-                                        </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label for="email" class="font-weight-bold text-dark">
+                                            Adresse Email <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="email" class="form-control" id="email" name="email" 
+                                               value="{{ old('email') }}" placeholder="Ex : jeanluc@inter-groupe.ci" required>
                                     </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label for="Input4" class="text-info">Email</label>
-                                            <input type="text" class="form-control" id="Input4" placeholder="name@gmail.com" name="email" required="required" value="{{old('email')}}">
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="Input5" class="text-info">Login</label>
-                                            <input type="text" class="form-control" id="Input5" name="username" required="required" value="{{old('username')}}">
-                                        </div>
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label for="username" class="font-weight-bold text-dark">
+                                            Identifiant de Connexion (Login) <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="username" name="username" 
+                                               value="{{ old('username') }}" placeholder="Ex : jkouame" required>
                                     </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label for="Input6" class="text-info">Mot de Passe (6 caractères minimum)</label>
-                                            <input type="password" class="form-control" id="Input6" name="password" required="required">
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="Input7" class="text-info">Confirmation du Mot de Passe (6 caractères minimum)</label>
-                                            <input type="password" class="form-control" id="Input7" name="password_confirmation" required="required">
-                                        </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label for="password" class="font-weight-bold text-dark">
+                                            Mot de passe <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="password" class="form-control" id="password" name="password" 
+                                               placeholder="Au moins 6 caractères" required minlength="6">
                                     </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label for="Select1" class="text-info">Niveau Accès</label>
-                                            <select class="form-control" id="Select1" name="role_id">
-                                                @for($i=0;$i<count($role);$i++)
-                                                    <option value="{{$role[$i]->id}}" selected="selected">{{$role[$i]->libelle}}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label for="password_confirmation" class="font-weight-bold text-dark">
+                                            Confirmation du mot de passe <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" 
+                                               placeholder="Répétez le mot de passe" required minlength="6">
                                     </div>
-                                    <div class="form-row">
-                                        <div class="form-group col-md-12">
-                                        <label for=""></label>
-                                        <center><button type="submit" class="btn btn-success" ><i class="lnr lnr-thumbs-up"> </i>Valider</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <a href="{{route('user')}}"><button type="button" class="btn btn-danger"><i class="lnr lnr-cross"> </i>Annuler</button></a></center>
-                                        </div>
-                                    </div>
-                                </form>
-                            <!--</div>-->
-						</div>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    <label for="role_id" class="font-weight-bold text-dark">
+                                        Rôle & Niveau d'accès <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-control custom-select" id="role_id" name="role_id" required>
+                                        @foreach($role as $r)
+                                            <option value="{{ $r->id }}">{{ $r->libelle }}</option>
+                                        @endforeach
+                                    </select>
+                                    <small class="form-text text-muted">
+                                        Les administrateurs ont accès à la gestion complète des utilisateurs et des configurations.
+                                    </small>
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-end pt-3 border-top">
+                                    <a href="{{ route('user') }}" class="btn btn-light mr-2">
+                                        Annuler
+                                    </a>
+                                    <button type="submit" class="btn btn-success px-4">
+                                        <i class="lnr lnr-check mr-1"></i> Créer l'utilisateur
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-				</div>
-			</div>
-			<!-- END MAIN CONTENT -->
-		</div>
-		<!-- END MAIN -->
-<!--END MAIN-->
-<br/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

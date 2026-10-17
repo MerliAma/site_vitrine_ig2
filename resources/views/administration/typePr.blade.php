@@ -1,141 +1,122 @@
-@extends('Layouts/admin/baseAdmin',['title'=>'Types Prestations'])
-
-@section('navactive')
-<ul class="nav">
-	<li><a href="{{route('accueilAd')}}" class=""><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
-	<li>
-		<a href="#subPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i> <span>Demandes</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-		<div id="subPages" class="collapse ">
-			<ul class="nav">
-				<li><a href="{{route('dmdForm')}}" class="">Formations</a></li>
-				<li><a href="{{route('dmdPrest')}}" class="">Prestations</a></li>
-			</ul>
-		</div>
-	</li>
-	<li><a href="{{route('domForm')}}" class=""><i class="lnr lnr-laptop"></i> <span>Domaines Formations</span></a></li>
-	<li><a href="{{route('typePr')}}" class="active"><i class="lnr lnr-code"></i> <span>Types Prestations</span></a></li>
-	<li><a href="{{route('suggestions')}}" class=""><i class="lnr lnr-alarm"></i> <span>Suggestions</span></a></li>
-	<li><a href="{{route('evenements')}}" class=""><i class="lnr lnr-calendar-full"></i> <span>Evènements</span></a></li>
-    <?php
-	use App\role;
-	$idAdmin=role::where('libelle','Admin')->get();
-	if(Auth::user()->role_id==$idAdmin[0]->id)
-	{ ?>
-	<li><a href="{{route('user')}}" class=""><i class="lnr lnr-users"></i> <span>Utilisateurs</span></a></li>
-	<?php 
-	}
-	?>
-</ul>
-@endsection
+@extends('Layouts/admin/baseAdmin', ['title' => 'Types de Prestations'])
 
 @section('contenu')
-<!-- MAIN -->
-		<div class="main">
-			<!-- MAIN CONTENT -->
-			<div class="main-content">
-				<div class="container-fluid">
-					<h3 class="page-title">Types de Prestations</h3> <!-- Mettre un bouton d'ajout et son formulaire -->
-					<div class="row">
-						<div class="col-md-12">
-							<!-- TABLE STRIPED -->
-							<div class="panel">
-								<!--<div class="panel-heading">
-									<h3 class="panel-title"></h3>
-								</div>-->
-								<div class="panel-body">
-								<?php
-									if(isset($_GET['info']) && $_GET['info']!="")
-									{
-										echo '<div class="alert alert-success alert-dismissible" role="alert">
-										<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-										'.$_GET['info'].'
-									</div>';
-									}
+<div class="main">
+    <div class="main-content">
+        <div class="container-fluid">
+            <!-- Header de page -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+                <div>
+                    <h2 class="h3 font-weight-bold text-dark mb-1">Types de Prestations Informatiques</h2>
+                    <p class="text-muted mb-0">Gestion du catalogue de services et d'ingénierie proposé par INTER-GROUPE</p>
+                </div>
+                <div class="mt-3 mt-md-0">
+                    <a href="{{ route('newPr', 'mode=Ajouter') }}" class="btn btn-primary shadow-sm font-weight-bold">
+                        <i class="lnr lnr-plus-circle mr-1"></i> Nouveau type de prestation
+                    </a>
+                </div>
+            </div>
 
-									if(isset($_GET['info2']) && $_GET['info2']!="")
-									{
-										echo '<div class="alert alert-danger alert-dismissible" role="alert">
-										<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-										'.$_GET['info2'].'
-									</div>';
-									}
-								?>
-									<a href="{{route('newPr', 'mode=Ajouter')}}" ><button type="button" class="btn btn-default new"><i class="fa fa-plus-square"></i>&nbsp; Nouveau</button></a> <br/><br/><br/> 
-									
-										@if($nblisteTypePr>0)
-										
-									<table class="table table-striped">
-										<thead>
-											<tr>
-												<th>N°</th>
-												<th>Libellé</th>
-												<th>Action</th>
-												<th>Modification</th>
-												<th>Suppression</th>
-											</tr>
-										</thead>
-										<tbody>
-											<!--<tr>
-												<td>1</td>
-												<td>Création de Sites</td>
-                                                <td><button type="submit" class="btn btn-primary" name=""><i class="lnr lnr-exit"></i>&nbsp;&nbsp;&nbsp; Retirer</button></td>
-												<td><a href="{{route('newPr')}}" ><button type="button" class="btn btn-success"><i class="fa fa-refresh"></i>&nbsp; Modifier</button></a></td>
-												<td><button type="submit" class="btn btn-danger" name=""><i class="fa fa-trash-o"></i>&nbsp; Supprimer</button></td>
-											</tr>-->
+            <!-- Messages d'alerte -->
+            @if(isset($_GET['info']) && $_GET['info'] != "")
+                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert">
+                    <i class="lnr lnr-checkmark-circle mr-2"></i> {{ $_GET['info'] }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
 
-												@for($i=0;$i<$nblisteTypePr;$i++)
-													
-													<tr>
-													<td>{{$i+1}}</td>
-													<td>{{$listeTypePr[$i]->libPr}}</td>
-													
-													@if($listeTypePr[$i]->boolTPrest==1)
-													
-													<td>
-													<form id="ret-form-{{$listeTypePr[$i]->id}}" action="{{route('RetP','mode=Retirer&idTypeP='.$listeTypePr[$i]->id)}}" method="post" style="display:none;">
-														@csrf
-														@method('GET')
-													</form>
-													<button type="submit" onclick="deleteT({{$listeTypePr[$i]->id}},'Retirer','ret')" class="btn btn-primary"><i class="lnr lnr-exit"></i>&nbsp;&nbsp;&nbsp; Retirer</button></td>
-													
-													@else
+            @if(isset($_GET['info2']) && $_GET['info2'] != "")
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
+                    <i class="lnr lnr-warning mr-2"></i> {{ $_GET['info2'] }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
 
-													<td>
-													<form id="int-form-{{$listeTypePr[$i]->id}}" action="{{route('RetP','mode=Integrer&idTypeP='.$listeTypePr[$i]->id)}}" method="post" style="display:none;">
-														@csrf
-														@method('GET')
-													</form>
-													<button type="submit" onclick="deleteT({{$listeTypePr[$i]->id}},'Integrer','int')" class="btn btn-primary" ><i class="lnr lnr-enter"></i>&nbsp; Afficher</button></td>
-													
-													@endif
-
-												<td><a href="{{route('newPr','mode=Modifier&idTypeP='.$listeTypePr[$i]->id)}}" ><button type="button" class="btn btn-success"><i class="fa fa-refresh"></i>&nbsp; Modifier</button></a></td>
-												
-												<td>
-												<form id="delete-form-{{$listeTypePr[$i]->id}}" action="{{route('SupTypeP','mode=Supprimer&idTypeP='.$listeTypePr[$i]->id)}}" method="post" style="display:none;">
-													@csrf
-													@method('DELETE')
-												</form>
-												<button type="submit" onclick="deleteT({{$listeTypePr[$i]->id}},'Supprimer','delete')" class="btn btn-danger"><i class="fa fa-trash-o"></i>&nbsp; Supprimer</button></td>
-											</tr>
-											@endfor
-										</tbody>
-									</table>
-									
-										@else
-											<div class="alert alert-warning alert-dismissible" role="alert">
-											<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-											 Aucun Type de prestation enregistré!
-										</div>
-										@endif
-								</div>
-							</div>
-							<!-- END TABLE STRIPED -->
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- END MAIN CONTENT -->
-		</div>
-		<!-- END MAIN -->
+            <!-- Carte principale -->
+            <div class="card border-0 shadow-sm" style="border-radius: var(--ig-radius-lg, 12px);">
+                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 font-weight-bold text-dark">
+                        <i class="lnr lnr-code mr-2 text-primary"></i> Prestations actives & archivées
+                    </h5>
+                    <span class="badge badge-light border px-3 py-2 text-muted">
+                        Total : <strong class="text-dark">{{ $nblisteTypePr }}</strong> prestation(s)
+                    </span>
+                </div>
+                <div class="card-body p-0">
+                    @if($nblisteTypePr > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="bg-light text-uppercase font-weight-bold" style="font-size: 0.8rem; letter-spacing: 0.5px;">
+                                    <tr>
+                                        <th class="border-0 px-4 py-3" style="width: 70px;">#</th>
+                                        <th class="border-0 py-3">Libellé du Service</th>
+                                        <th class="border-0 py-3 text-center" style="width: 140px;">Visibilité</th>
+                                        <th class="border-0 py-3 text-center" style="width: 140px;">Modification</th>
+                                        <th class="border-0 py-3 text-right pr-4" style="width: 140px;">Suppression</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for($i = 0; $i < $nblisteTypePr; $i++)
+                                        <tr>
+                                            <td class="px-4 py-3 text-muted font-weight-bold">{{ $i + 1 }}</td>
+                                            <td class="py-3">
+                                                <div class="font-weight-bold text-dark">{{ $listeTypePr[$i]->libPr }}</div>
+                                            </td>
+                                            <td class="py-3 text-center">
+                                                @if($listeTypePr[$i]->boolTPrest == 1)
+                                                    <form id="ret-form-{{ $listeTypePr[$i]->id }}" action="{{ route('RetP', 'mode=Retirer&idTypeP='.$listeTypePr[$i]->id) }}" method="post" style="display:none;">
+                                                        @csrf
+                                                        @method('GET')
+                                                    </form>
+                                                    <button type="button" onclick="deleteT({{ $listeTypePr[$i]->id }}, 'Retirer', 'ret')" class="btn btn-sm btn-outline-warning" title="Masquer du site public">
+                                                        <i class="lnr lnr-eye mr-1"></i> Retirer
+                                                    </button>
+                                                @else
+                                                    <form id="int-form-{{ $listeTypePr[$i]->id }}" action="{{ route('RetP', 'mode=Integrer&idTypeP='.$listeTypePr[$i]->id) }}" method="post" style="display:none;">
+                                                        @csrf
+                                                        @method('GET')
+                                                    </form>
+                                                    <button type="button" onclick="deleteT({{ $listeTypePr[$i]->id }}, 'Integrer', 'int')" class="btn btn-sm btn-outline-success" title="Publier sur le site public">
+                                                        <i class="lnr lnr-redo mr-1"></i> Publier
+                                                    </button>
+                                                @endif
+                                            </td>
+                                            <td class="py-3 text-center">
+                                                <a href="{{ route('newPr', 'mode=Modifier&idTypeP='.$listeTypePr[$i]->id) }}" class="btn btn-sm btn-light border text-primary" title="Modifier le libellé">
+                                                    <i class="lnr lnr-pencil mr-1"></i> Modifier
+                                                </a>
+                                            </td>
+                                            <td class="py-3 text-right pr-4">
+                                                <form id="delete-form-{{ $listeTypePr[$i]->id }}" action="{{ route('SupTypeP', 'mode=Supprimer&idTypeP='.$listeTypePr[$i]->id) }}" method="post" style="display:none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                                <button type="button" onclick="deleteT({{ $listeTypePr[$i]->id }}, 'Supprimer', 'delete')" class="btn btn-sm btn-outline-danger" title="Supprimer ce type">
+                                                    <i class="lnr lnr-trash mr-1"></i> Supprimer
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endfor
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="text-center py-5">
+                            <i class="lnr lnr-inbox text-muted mb-3" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted">Aucun type de prestation enregistré</h5>
+                            <p class="text-muted mb-3">Créez votre premier type de prestation informatique pour l'afficher sur le catalogue.</p>
+                            <a href="{{ route('newPr', 'mode=Ajouter') }}" class="btn btn-primary">
+                                <i class="lnr lnr-plus-circle mr-1"></i> Ajouter une prestation
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

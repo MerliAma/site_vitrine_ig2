@@ -34,6 +34,9 @@
 </head>
 
 <body>
+    <!-- Lien d'évitement accessible (WCAG 2.4.1) -->
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
     <div id="contenu">
         @include('Layouts/header')
         <main id="main-content" class="container-fluid px-3 px-md-4 py-2">

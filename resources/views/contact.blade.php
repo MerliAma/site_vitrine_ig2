@@ -70,7 +70,7 @@
 
                 <div class="contact-info-item">
                     <div class="contact-icon-bubble">
-                        <i class="fas fa-phone-alt" aria-hidden="true"></i>
+                        <i class="fas fa-phone" aria-hidden="true"></i>
                     </div>
                     <div>
                         <strong class="text-secondary d-block font-weight-bold">Téléphone</strong>
@@ -133,9 +133,15 @@
                         @csrf 
                         <div class="form-group mb-3">
                             <label for="inputNomSug" class="small font-weight-bold text-secondary">
-                                Nom et Prénom(s) <span class="required-star text-danger">*</span>
+                                Nom et Prénom(s) <span class="required-star text-danger" aria-hidden="true">*</span>
+                                <span class="sr-only">(obligatoire)</span>
                             </label>
-                            <input type="text" class="form-control" id="inputNomSug" placeholder="Ex. Koffi Jean-Marc" name="nomSug" required="required" value="{{old('nomSug')}}">
+                            <input type="text" class="form-control @error('nomSug') is-invalid @enderror" id="inputNomSug" placeholder="Ex. Koffi Jean-Marc" name="nomSug" required="required" value="{{old('nomSug')}}" aria-required="true">
+                            @error('nomSug')
+                                <span class="invalid-feedback" role="alert">
+                                    <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i> {{ $message }}
+                                </span>
+                            @enderror
                         </div>
 
                         <div class="form-row">
@@ -143,21 +149,38 @@
                                 <label for="inputMailSug" class="small font-weight-bold text-secondary">
                                     Adresse Email
                                 </label>
-                                <input type="email" class="form-control" id="inputMailSug" placeholder="nom@entreprise.ci" name="mailSug" value="{{old('mailSug')}}">
+                                <input type="email" class="form-control @error('mailSug') is-invalid @enderror" id="inputMailSug" placeholder="nom@entreprise.ci" name="mailSug" value="{{old('mailSug')}}">
+                                @error('mailSug')
+                                    <span class="invalid-feedback" role="alert">
+                                        <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i> {{ $message }}
+                                    </span>
+                                @enderror
                             </div>
                             <div class="form-group col-md-6 mb-3">
                                 <label for="inputTelSug" class="small font-weight-bold text-secondary">
                                     Numéro de Téléphone
                                 </label>
-                                <input type="tel" class="form-control" id="inputTelSug" placeholder="0700000000" name="telSug" value="{{old('telSug')}}">
+                                <input type="tel" class="form-control @error('telSug') is-invalid @enderror" id="inputTelSug" placeholder="0701020304" name="telSug" value="{{old('telSug')}}" aria-describedby="telSugHelp" pattern="[0-9]{10}">
+                                <small id="telSugHelp" class="form-text text-muted">Format standard à 10 chiffres (ex: 0701020304)</small>
+                                @error('telSug')
+                                    <span class="invalid-feedback" role="alert">
+                                        <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i> {{ $message }}
+                                    </span>
+                                @enderror
                             </div>
                         </div>
 
                         <div class="form-group mb-4">
                             <label for="inputMsgSug" class="small font-weight-bold text-secondary">
-                                Message ou Suggestion <span class="required-star text-danger">*</span>
+                                Message ou Suggestion <span class="required-star text-danger" aria-hidden="true">*</span>
+                                <span class="sr-only">(obligatoire)</span>
                             </label>
-                            <textarea class="form-control" id="inputMsgSug" rows="4" placeholder="Exprimez votre avis, vos observations ou vos attentes..." name="msgSug" required="required">{{old('msgSug')}}</textarea>
+                            <textarea class="form-control @error('msgSug') is-invalid @enderror" id="inputMsgSug" rows="4" placeholder="Exprimez votre avis, vos observations ou vos attentes..." name="msgSug" required="required" aria-required="true">{{old('msgSug')}}</textarea>
+                            @error('msgSug')
+                                <span class="invalid-feedback" role="alert">
+                                    <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i> {{ $message }}
+                                </span>
+                            @enderror
                         </div>
 
                         <div class="text-right">
@@ -181,7 +204,7 @@
         </div>
         <div class="card-body p-0">
             <div class="contact-map-wrapper mb-0 rounded-0 border-0">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3972.6835083711567!2d-4.012403799999998!3d5.311978300000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfc1ebc3ed8a44d1%3A0x75aed55330be96b9!2sPalais+de+la+Culture!5e0!3m2!1sfr!2sci!4v1442785288463" width="100%" height="340" frameborder="0" style="border:0;" allowfullscreen="" aria-label="Localisation du cabinet INTER-GROUPE à Treichville"></iframe>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3972.6835083711567!2d-4.012403799999998!3d5.311978300000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfc1ebc3ed8a44d1%3A0x75aed55330be96b9!2sPalais+de+la+Culture!5e0!3m2!1sfr!2sci!4v1442785288463" width="100%" height="340" frameborder="0" style="border:0;" allowfullscreen="" title="Plan d'accès interactif et localisation du cabinet INTER-GROUPE à Treichville, Abidjan" aria-label="Localisation du cabinet INTER-GROUPE à Treichville"></iframe>
             </div>
         </div>
     </div>

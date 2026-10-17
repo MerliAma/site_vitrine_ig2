@@ -1,84 +1,74 @@
-@extends('Layouts/admin/baseAdmin',['title'=>'Nouvelle Prestation'])
-
-@section('navactive')
-<ul class="nav">
-	<li><a href="{{route('accueilAd')}}" class=""><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
-	<li>
-		<a href="#subPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i> <span>Demandes</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-		<div id="subPages" class="collapse ">
-			<ul class="nav">
-				<li><a href="{{route('dmdForm')}}" class="">Formations</a></li>
-				<li><a href="{{route('dmdPrest')}}" class="">Prestations</a></li>
-			</ul>
-		</div>
-	</li>
-	<li><a href="{{route('domForm')}}" class=""><i class="lnr lnr-laptop"></i> <span>Domaines Formations</span></a></li>
-	<li><a href="{{route('typePr')}}" class="active"><i class="lnr lnr-code"></i> <span>Types Prestations</span></a></li>
-	<li><a href="{{route('suggestions')}}" class=""><i class="lnr lnr-alarm"></i> <span>Suggestions</span></a></li>
-	<li><a href="{{route('evenements')}}" class=""><i class="lnr lnr-calendar-full"></i> <span>Evènements</span></a></li>
-    <?php
-	use App\role;
-	$idAdmin=role::where('libelle','Admin')->get();
-	if(Auth::user()->role_id==$idAdmin[0]->id)
-	{ ?>
-	<li><a href="{{route('user')}}" class=""><i class="lnr lnr-users"></i> <span>Utilisateurs</span></a></li>
-	<?php 
-	}
-	?>
-</ul>
-@endsection
+@extends('Layouts/admin/baseAdmin', ['title' => 'Nouvelle Prestation'])
 
 @section('contenu')
-<!-- MAIN -->
+<?php
+    use App\TypePrestation;
+    $mode = $_GET['mode'] ?? 'Ajouter';
+    if ($mode === 'Modifier' && isset($_GET['idTypeP'])) {
+        $typeP = TypePrestation::find($_GET['idTypeP']);
+        $idTypeP = $_GET['idTypeP'];
+        $titrePage = "Modifier le Type de Prestation";
+        $sousTitre = "Mise à jour du libellé de prestation informatique";
+    } else {
+        $idTypeP = null;
+        $titrePage = "Nouveau Type de Prestation";
+        $sousTitre = "Création d'un service d'ingénierie informatique";
+    }
+?>
 <div class="main">
-			<!-- MAIN CONTENT -->
-			<div class="main-content">
-				<div class="container-fluid">
-				<?php
-                    use App\TypePrestation;
-                    use App\suggestion;
-                    $nbSugNonLu=suggestion::where('boolSug','0')->count();
-                    if($_GET['mode']=="Modifier")
-                    {
-                        $typeP=TypePrestation::find($_GET['idTypeP']);
-                        $idTypeP=$_GET['idTypeP'];
-                        $actionNewEv="Modification d'un Type de Prestation";
-                    }
-                    else
-                    {
-                        $idTypeP=null;
-                        $actionNewP="Ajout d'un nouveau Type de Prestation";
-                    }
-                ?>
-					<h3 class="page-title"><?php if(isset($actionNewP)) {echo $actionNewP;} ?></h3> 
-					<div class="row">
-						<div class="col-md-5 formulaire">
-                            <!--<div class="panel">-->
-                                <form action="{{route('newPr2','mode='.$_GET['mode'].'&idTypeP='.$idTypeP)}}" method="post">
-								@csrf
-                                    <!--<div class="form-group">
-                                        <label for="Input1">Identifiant</label>
-                                        <input type="text" class="form-control" id="Input1" placeholder="" name="idPr">
-                                    </div>-->
-                                    <div class="form-group">
-                                        <label for="Input2" class="text-info">Libellé du Type</label>
-                                        <input type="text" class="form-control" id="Input2" placeholder="" name="libPr" value="<?php if(isset($typeP)) {echo $typeP->libPr;} ?>" required="required">
-                                    </div>
-                                    <br/><br/>
-                                    <div class="form-group">
-                                        <div class="col">
-                                        <center><button type="submit" class="btn btn-success" name="validPr"><i class="lnr lnr-thumbs-up"> </i>Valider</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <a href="{{route('typePr')}}"><button type="button" class="btn btn-danger"><i class="lnr lnr-cross"> </i>Annuler</button></a></center>
-                                        </div>
-                                    </div>
-                                </form>
-                            <!--</div>-->
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- END MAIN CONTENT -->
-		</div>
-		<!-- END MAIN -->
-<!--END MAIN--> 
+    <div class="main-content">
+        <div class="container-fluid">
+            <!-- Header de page -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+                <div>
+                    <h2 class="h3 font-weight-bold text-dark mb-1">{{ $titrePage }}</h2>
+                    <p class="text-muted mb-0">{{ $sousTitre }}</p>
+                </div>
+                <div class="mt-3 mt-md-0">
+                    <a href="{{ route('typePr') }}" class="btn btn-outline-secondary">
+                        <i class="lnr lnr-arrow-left mr-1"></i> Retour aux prestations
+                    </a>
+                </div>
+            </div>
+
+            <!-- Formulaire -->
+            <div class="row">
+                <div class="col-lg-6 col-md-8">
+                    <div class="card border-0 shadow-sm" style="border-radius: var(--ig-radius-lg, 12px);">
+                        <div class="card-header bg-white border-bottom py-3">
+                            <h5 class="mb-0 font-weight-bold text-dark">
+                                <i class="lnr lnr-code mr-2 text-primary"></i> Libellé de la Prestation
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form action="{{ route('newPr2', 'mode='.$mode.'&idTypeP='.$idTypeP) }}" method="post">
+                                @csrf
+                                <div class="form-group mb-4">
+                                    <label for="libPr" class="font-weight-bold text-dark">
+                                        Intitulé du service <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control form-control-lg" id="libPr" name="libPr" 
+                                           value="{{ $typeP->libPr ?? old('libPr') }}" 
+                                           placeholder="Ex : Audit de sécurité & Tests d'intrusion" required>
+                                    <small class="form-text text-muted">
+                                        Ce type de prestation apparaîtra dans la liste déroulante des demandes de devis et sur la page de présentation.
+                                    </small>
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-end pt-3 border-top">
+                                    <a href="{{ route('typePr') }}" class="btn btn-light mr-2">
+                                        Annuler
+                                    </a>
+                                    <button type="submit" class="btn btn-success px-4" name="validPr">
+                                        <i class="lnr lnr-check mr-1"></i> Enregistrer
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

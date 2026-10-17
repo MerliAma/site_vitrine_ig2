@@ -1,176 +1,157 @@
-@extends('Layouts/admin/baseAdmin',['title'=>'Nouveau Domaine de Formation'])
-
-@section('navactive')
-<ul class="nav">
-	<li><a href="{{route('accueilAd')}}" class=""><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
-	<li>
-		<a href="#subPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i> <span>Demandes</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-		<div id="subPages" class="collapse ">
-			<ul class="nav">
-				<li><a href="{{route('dmdForm')}}" class="">Formations</a></li>
-				<li><a href="{{route('dmdPrest')}}" class="">Prestations</a></li>
-			</ul>
-		</div>
-	</li>
-	<li><a href="{{route('domForm')}}" class="active"><i class="lnr lnr-laptop"></i> <span>Domaines Formations</span></a></li>
-	<li><a href="{{route('typePr')}}" class=""><i class="lnr lnr-code"></i> <span>Types Prestations</span></a></li>
-	<li><a href="{{route('suggestions')}}" class=""><i class="lnr lnr-alarm"></i> <span>Suggestions</span></a></li>
-	<li><a href="{{route('evenements')}}" class=""><i class="lnr lnr-calendar-full"></i> <span>Evènements</span></a></li>
-    <?php
-	use App\role;
-	$idAdmin=role::where('libelle','Admin')->get();
-	if(Auth::user()->role_id==$idAdmin[0]->id)
-	{ ?>
-	<li><a href="{{route('user')}}" class=""><i class="lnr lnr-users"></i> <span>Utilisateurs</span></a></li>
-	<?php 
-	}
-	?>
-</ul>
-@endsection
+@extends('Layouts/admin/baseAdmin',['title'=>'Domaine de Formation'])
 
 @section('contenu')
-<style>
-    #Err{
-        color:red;
-    }
-    #entete{
-        padding:15px;
-    }
-    #nbBen{
-        margin:15px;
-    }
-    td{
-        padding:10px;
-        font-size:17px;
-    }
-</style>
 <!-- MAIN -->
 <div class="main">
-			<!-- MAIN CONTENT -->
-			<div class="main-content">
-				<div class="container-fluid">
-				<?php
-                    use App\DomaineFormation;
-                    use App\suggestion;
-                    $nbSugNonLu=suggestion::where('boolSug','0')->count();
-                    if($_GET['mode']=="Modifier")
-                    {
-                        $DomF=DomaineFormation::find($_GET['idDomF']);
-                        $idDomF=$_GET['idDomF'];
-                        $actionNewEv="Modification d'un Domaine de Formation";
-                    }
-                    else
-                    {
-                        $idDomF=null;
-                        $actionNewF="Ajout d'un nouveau Domaine de Formation";
-                    }
-                ?>
-					<h3 class="page-title"><?php if(isset($actionNewF)) {echo $actionNewF;} ?></h3> 
-					<div class="row">
-						<div class="col-md-5 formulaire">
-                            <!--<div class="panel">-->
-							<form action="{{route('newForm2','mode='.$_GET['mode'].'&idDomF='.$idDomF)}}" method="post">
-							@csrf
-                                    <!--<div class="form-group">
-                                        <label for="Input1">Identifiant</label>
-                                        <input type="text" class="form-control" id="Input1" placeholder="" name="idForm">
-                                    </div>-->
-                                    <div class="form-group">
-                                        <label for="Input2" class="text-info">Libellé du Domaine</label>
-                                        <input type="text" class="form-control" id="Input2" name="libForm" value="<?php if(isset($DomF)) {echo $DomF->libForm;} ?>" required="required">
-                                    </div>
-                                    <br/><br/>
-									<?php
-										if($idDomF==null){
-                                        echo '<div class="form-group">
-                                    <label class="text-info">Modules Associés</label><br/>';
-									
-										echo '<span id="entete">Entrez le Nombre de Modules à ajouter</span> <br/><input type="number" class="nbBen" name="nbBen" id="nbBen" required="required" title="Appuyer sur OK pour valider" onChange="nbLigne()"/>
-											 &nbsp;&nbsp;&nbsp;<button type="button" id="VBen" class="VBen" onClick="nbLigne()">OK</button>
-											 <div id="Err" class="Err"></div>
-											 <table id="table" >
-												 <thead >
-													 
-												 </thead>
-												 <tbody id="ligne" >
-													 
-												 </tbody>
-                                             </table>
-                                             </div>';
-                                        }
-									?>
-                                    
-                                    <div class="form-group">
-                                        <div class="col">
-                                        <center><button type="submit" class="btn btn-success" name="validForm"><i class="lnr lnr-thumbs-up"> </i>Valider</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <a href="{{route('domForm')}}"><button type="button" class="btn btn-danger"><i class="lnr lnr-cross"> </i>Annuler</button></a></center>
-                                        </div>
-                                    </div>
-                                </form>
-                            <!--</div>-->
+	<!-- MAIN CONTENT -->
+	<div class="main-content">
+		<div class="container-fluid">
+			<?php
+				use App\DomaineFormation;
+				$mode = $_GET['mode'] ?? 'Ajouter';
+				if($mode == "Modifier" && isset($_GET['idDomF']))
+				{
+					$DomF = DomaineFormation::find($_GET['idDomF']);
+					$idDomF = $_GET['idDomF'];
+					$titlePage = "Modification du Domaine de Formation";
+				}
+				else
+				{
+					$idDomF = null;
+					$titlePage = "Nouveau Domaine de Formation";
+				}
+			?>
+			
+			<div class="page-title">
+				<div>
+					<h3 style="margin: 0; font-size: 1.625rem; font-weight: 700; color: var(--ig-secondary, #1A3A6B);">{{ $titlePage }}</h3>
+					<p style="margin: 4px 0 0; font-size: 0.875rem; color: var(--ig-text-muted, #64748B);">Renseignez les informations de la filière de formation continue</p>
+				</div>
+				<div>
+					<a href="{{ route('domForm') }}" class="btn btn-default" style="border-radius: var(--ig-radius-md, 8px);">
+						<i class="fa fa-arrow-left"></i> Retour aux Domaines
+					</a>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-8 col-md-offset-2 col-sm-12">
+					<div class="panel">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								<i class="fa fa-edit text-primary" style="margin-right: 6px;"></i> Formulaire de gestion de domaine
+							</h3>
+						</div>
+						<div class="panel-body">
+							<form action="{{route('newForm2','mode='.$mode.'&idDomF='.$idDomF)}}" method="post">
+								@csrf
+								
+								<div class="form-group">
+									<label for="Input2" style="font-weight: 600; color: var(--ig-secondary, #1A3A6B);">
+										Libellé du Domaine de Formation <span class="text-danger">*</span>
+									</label>
+									<input type="text" class="form-control" id="Input2" name="libForm" value="{{ $DomF->libForm ?? old('libForm') }}" placeholder="Ex: Comptabilité et Gestion Financière, Informatique Décisionnelle..." required>
+									<span class="help-block" style="font-size: 0.8125rem; color: var(--ig-text-muted, #64748B);">Ce titre sera affiché sur le site public et dans le formulaire de demande.</span>
+								</div>
+
+								@if($idDomF == null)
+									<div class="form-group" style="margin-top: 1.5rem; padding: 1.25rem; background: var(--ig-surface-muted, #F1F5F9); border-radius: var(--ig-radius-md, 8px); border: 1px solid var(--ig-border, #E2E8F0);">
+										<label style="font-weight: 700; color: var(--ig-secondary, #1A3A6B); display: block; margin-bottom: 0.5rem;">
+											<i class="fa fa-cubes text-success"></i> Modules associés à ce domaine
+										</label>
+										<p style="font-size: 0.875rem; color: var(--ig-text-muted, #64748B); margin-bottom: 1rem;">
+											Indiquez le nombre de modules initiaux à créer sous ce domaine, puis cliquez sur <strong>Générer</strong> pour saisir leurs libellés.
+										</p>
+										
+										<div class="row" style="margin-bottom: 1rem;">
+											<div class="col-sm-6">
+												<div class="input-group">
+													<input type="number" class="form-control nbBen" name="nbBen" id="nbBen" min="1" max="50" placeholder="Nombre de modules" value="1" onChange="nbLigne()">
+													<span class="input-group-btn">
+														<button type="button" id="VBen" class="btn btn-primary VBen" onClick="nbLigne()">Générer les lignes</button>
+													</span>
+												</div>
+											</div>
+										</div>
+
+										<div id="Err" class="Err text-danger" style="font-weight: 600; margin-bottom: 0.5rem;"></div>
+
+										<div class="table-responsive" style="margin-top: 0.75rem; background: #fff;">
+											<table id="table" class="table table-bordered table-striped" style="margin-bottom: 0;">
+												<thead>
+													<tr style="background: var(--ig-surface-muted, #F1F5F9);">
+														<th style="width: 60px;">N°</th>
+														<th>Intitulé du module</th>
+													</tr>
+												</thead>
+												<tbody id="ligne">
+												</tbody>
+											</table>
+										</div>
+									</div>
+								@endif
+
+								<div class="form-group" style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--ig-border, #E2E8F0); display: flex; gap: 12px; justify-content: flex-end;">
+									<a href="{{route('domForm')}}" class="btn btn-default" style="border-radius: var(--ig-radius-md, 8px);">
+										Annuler
+									</a>
+									<button type="submit" class="btn btn-primary" name="validForm" style="border-radius: var(--ig-radius-md, 8px); font-weight: 600;">
+										<i class="fa fa-check"></i> Enregistrer le Domaine
+									</button>
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>
 			</div>
-			<!-- END MAIN CONTENT -->
 		</div>
-		<!-- END MAIN -->
-<!--END MAIN-->
+	</div>
+	<!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->
+
 <script>
+function nbLigne(){  
+	var nbBen = document.getElementById('nbBen');
+	if(!nbBen) return;
+	var val = parseInt(nbBen.value, 10);
+	var table = document.getElementById('table');
+	var ligne = document.getElementById('ligne');
+	var err = document.getElementById('Err');
 
-        /*for(i=1;i<document.getElementsByClassName('nbBen').length;i++)
-        {
-            //window.addEventListener('load',nbLigne(i));
-            nbLigne(i);
-        }*/
+	if(isNaN(val) || val < 1) {
+		val = 1;
+		nbBen.value = 1;
+		if(err) err.innerHTML = "Attention : veuillez ajouter au moins 1 module.";
+	} else {
+		if(err) err.innerHTML = "";
+	}
 
-        function nbLigne(){  
-            
-        var nbBen = document.getElementById('nbBen').value;
-        var nbTr=document.getElementById('table').children[1].children.length;
-        let ligne = document.getElementById('ligne');
-        var nbTrVrai=nbTr;
-        var nOrdre;
+	var nbTrVrai = ligne.children.length;
 
-        document.getElementById('table').children[0].innerHTML="<td>N° </td><td>Libellé du module</td>";
-        if(nbBen==0)
-        {
-            nbBen=1; 
-            document.getElementById('Err').innerHTML="Attention! Il faut au moins 1 Module à ajouter";
-            document.getElementById('nbBen').value=1;
-        }
-       
-        if(nbBen>nbTrVrai)
-        {
-            while(nbBen>nbTrVrai)
-            {
-                var newTr = document.createElement("tr");
-                ligne.appendChild(newTr);
-                newTr.setAttribute('name','tr');
-                //nbTr=document.getElementById('table1').getElementsByTagName('tr').length;
-                nbTr=document.getElementById('table').children[1].children.length;
-                nOrdre=nbTrVrai+1;
-                
-                newTr.innerHTML="<td>"+nOrdre+"</td><td><input /></td>";
-               
-                //les attributs "name" et "required" pr les inputs!
-                newTr.children[1].children[0].setAttribute("required","required");
+	if(val > nbTrVrai) {
+		while(val > nbTrVrai) {
+			var newTr = document.createElement("tr");
+			ligne.appendChild(newTr);
+			var nOrdre = nbTrVrai + 1;
+			newTr.innerHTML = "<td><strong>" + nOrdre + "</strong></td><td><input type='text' class='form-control' placeholder='Ex: Module " + nOrdre + "...' /></td>";
+			newTr.children[1].children[0].setAttribute("required", "required");
+			newTr.children[1].children[0].setAttribute("name", "libMod" + nbTrVrai);
+			nbTrVrai = ligne.children.length;
+		}
+	} else {
+		while(val < nbTrVrai) {
+			ligne.removeChild(ligne.lastChild);
+			nbTrVrai = ligne.children.length;
+		}
+	}
+}
 
-                newTr.children[1].children[0].setAttribute("name","libMod"+nbTrVrai);
-
-                nbTrVrai=nbTr;
-            }
-            
-        }
-        else
-        {
-            while(nbBen<nbTrVrai)
-            {
-                ligne.removeChild(ligne.lastChild);
-                nbTr=document.getElementById('table').children[1].children.length;
-                nbTrVrai=nbTr;
-            }
-        }
-        }
-    </script> 
+// Initialiser automatiquement 1 ligne par défaut
+window.addEventListener('DOMContentLoaded', function() {
+	if(document.getElementById('nbBen')) {
+		nbLigne();
+	}
+});
+</script>
 @endsection

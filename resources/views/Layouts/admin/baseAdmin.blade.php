@@ -5,12 +5,11 @@
 	<title>IG-Espace Administrateur | {{$title}}</title>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- VENDOR CSS -->
     <link rel="stylesheet" href="{{asset('template/vendor/bootstrap/css/bootstrap.min.css')}}">
 	<link rel="stylesheet" href="{{asset('template/vendor/font-awesome/css/font-awesome.min.css')}}">
 	<link rel="stylesheet" href="{{asset('template/vendor/linearicons/style.css')}}">
-	<link rel="stylesheet" href="{{asset('template/vendor/chartist/css/chartist-custom.css')}}">
 	<!-- MAIN CSS -->
 	<link rel="stylesheet" href="{{asset('template/css/main.css')}}">
 	<!-- FOR DEMO PURPOSES ONLY. You should remove this in your project 
@@ -32,9 +31,11 @@
 </head>
 
 <body>
+	<!-- Lien d'évitement accessible (WCAG 2.4.1) -->
+	<a href="#admin-main" class="skip-link">Aller au contenu principal</a>
+
 	<!-- WRAPPER -->
-	<div id="wrapper">
-		<!-- NAVBAR -->
+	<div id="wrapper">		<!-- NAVBAR -->
 		<nav class="navbar navbar-default navbar-fixed-top">  
 			<div class="brand">
 				<a href="{{route('accueilAd')}}" class="ig-brand" title="INTER-GROUPE Administration">
@@ -43,61 +44,54 @@
 			</div>
 			<div class="container-fluid barre">
 				<div class="navbar-btn">
-					<button type="button" class="btn-toggle-fullwidth"><i class="lnr lnr-arrow-left-circle"></i></button>
+					<button type="button" class="btn-toggle-fullwidth" aria-label="Basculer le menu latéral"><i class="lnr lnr-arrow-left-circle"></i></button>
 				</div>
-				<form class="navbar-form navbar-left">
-					<div class="input-group">
-						<input type="text" value="" class="form-control" placeholder="Rechercher...">
-						<span class="input-group-btn"><button type="button" class="btn btn-primary">Go</button></span>
-					</div>
-				</form>
-				<div class="navbar-btn navbar-btn-right">
-					<!--<a class="btn btn-success update-pro" href="https://www.themeineed.com/downloads/klorofil-pro-bootstrap-admin-dashboard-template/?utm_source=klorofil&utm_medium=template&utm_campaign=KlorofilPro" title="Upgrade to Pro" target="_blank"><i class="fa fa-rocket"></i> <span>UPGRADE TO PRO</span></a>-->
-					<!--<a class="update-pro" href="{{route('accueilAd')}}"><img src="{{asset('template/img/2.png')}}" alt="IG Logo" class="img-responsive logo" id="img"></a>-->
+				<div class="navbar-left hidden-xs" style="padding: 18px 10px;">
+					<span style="font-size: 0.875rem; color: var(--ig-text-muted, #64748B); font-weight: 500;">
+						<i class="fa fa-shield text-success"></i> Espace d'administration sécurisé
+					</span>
+				</div>
+				<div class="navbar-btn navbar-btn-right hidden-xs">
+					<a href="{{ route('accueil') }}" target="_blank" class="btn btn-sm btn-default" style="margin-top: 2px; margin-right: 15px; border-radius: var(--ig-radius-md, 8px);" title="Ouvrir le site public dans un nouvel onglet">
+						<i class="fa fa-external-link"></i> <span class="hidden-sm">Site public</span>
+					</a>
 				</div>
 				<div id="navbar-menu">
 					<ul class="nav navbar-nav navbar-right">
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle icon-menu" data-toggle="dropdown">
+							<a href="#" class="dropdown-toggle icon-menu" data-toggle="dropdown" aria-label="Notifications suggestions">
 								<i class="lnr lnr-alarm"></i>
-								<span class="badge bg-danger"><?php echo $nbSugNonLu; ?></span>
+								<span class="badge bg-danger">{{ $nbSugNonLu ?? 0 }}</span>
 							</a>
 							<ul class="dropdown-menu notifications">
-								<!--<li><a href="#" class="notification-item"><span class="dot bg-warning"></span>System space is almost full</a></li>
-								<li><a href="#" class="notification-item"><span class="dot bg-danger"></span>You have 9 unfinished tasks</a></li>
-								<li><a href="#" class="notification-item"><span class="dot bg-success"></span>Monthly report is available</a></li>
-								<li><a href="#" class="notification-item"><span class="dot bg-warning"></span>Weekly meeting in 1 hour</a></li>
-								<li><a href="#" class="notification-item"><span class="dot bg-success"></span>Your request has been approved</a></li>-->
-								<li><a href="{{route('suggestions')}}" class="more">Voir les suggestions</a></li>
+								<li style="padding: 12px 16px; border-bottom: 1px solid var(--ig-border, #E2E8F0); font-weight: 600; color: var(--ig-secondary, #1A3A6B);">
+									<span>Suggestions & Messages</span>
+								</li>
+								<li>
+									<a href="{{route('suggestions')}}" class="more" style="color: var(--ig-primary, #0A6E3F);">
+										<i class="lnr lnr-envelope"></i> Voir toutes les suggestions ({{ $nbSugNonLu ?? 0 }} non lue{{ ($nbSugNonLu ?? 0) > 1 ? 's' : '' }})
+									</a>
+								</li>
 							</ul>
 						</li>
-						<!--<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="lnr lnr-question-circle"></i> <span>Help</span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
-							<ul class="dropdown-menu">
-								<li><a href="#">Basic Use</a></li>
-								<li><a href="#">Working With Data</a></li>
-								<li><a href="#">Security</a></li>
-								<li><a href="#">Troubleshooting</a></li>
-							</ul>
-						</li>-->
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{asset('template/img/2.png')}}" class="img-circle" alt="Avatar"> <span><?php echo Auth::user()->username; ?></span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+								<img src="{{asset('template/img/2.png')}}" class="img-circle" alt="Avatar Administrateur" style="width: 26px; height: 26px; object-fit: contain; border: 1px solid var(--ig-border, #E2E8F0); padding: 1px; background: #fff;"> 
+								<span style="font-weight: 600;">{{ Auth::user()->name ?? Auth::user()->username ?? 'Utilisateur' }}</span> 
+								<i class="icon-submenu lnr lnr-chevron-down"></i>
+							</a>
 							<ul class="dropdown-menu">
 								<li><a href="{{route('profil')}}"><i class="lnr lnr-user"></i> <span>Mon Compte</span></a></li>
-								<!--<li><a href="#"><i class="lnr lnr-envelope"></i> <span>Message</span></a></li>
-								<li><a href="#"><i class="lnr lnr-cog"></i> <span>Settings</span></a></li>
-								<li><a href="{{ route('login') }}" ><i class="lnr lnr-exit"></i> <span>Déconnexion</span></a></li>-->
-								<li><a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        <i class="lnr lnr-exit"></i>{{ __('Déconnexion') }}
-                                     </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form></li>
+								<li>
+									<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+										<i class="lnr lnr-exit"></i> <span>{{ __('Déconnexion') }}</span>
+									</a>
+									<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+										@csrf
+									</form>
+								</li>
 							</ul>
 						</li>
-						
 					</ul>
 				</div>
 			</div>
@@ -107,30 +101,81 @@
 		<div id="sidebar-nav" class="sidebar">
 			<div class="sidebar-scroll">
 				<nav>
-					<!--<ul class="nav">
-						<li><a href="{{route('accueilAd')}}" class="active"><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
-						<li>
-							<a href="#subPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i> <span>Demandes</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-							<div id="subPages" class="collapse ">
-								<ul class="nav">
-									<li><a href="{{route('dmdForm')}}" class="">Formations</a></li>
-									<li><a href="{{route('dmdPrest')}}" class="">Prestations</a></li>
-								</ul>
-							</div>
-						</li>
-						<li><a href="{{route('domForm')}}" class=""><i class="lnr lnr-laptop"></i> <span>Domaines Formations</span></a></li>
-						<li><a href="{{route('typePr')}}" class=""><i class="lnr lnr-code"></i> <span>Types Prestations</span></a></li>
-                        <li><a href="{{route('suggestions')}}" class=""><i class="lnr lnr-alarm"></i> <span>Suggestions</span></a></li>
-                        <li><a href="{{route('user')}}" class=""><i class="lnr lnr-users"></i> <span>Utilisateurs</span></a></li>
-					</ul>-->
-					@yield('navactive')
-                </nav>
+					@hasSection('navactive')
+						@yield('navactive')
+					@else
+						@php
+							$currentRoute = Route::currentRouteName();
+							$isDemandes = in_array($currentRoute, ['dmdForm', 'dmdPrest', 'listeBenef']);
+							$isAdminUser = false;
+							if(Auth::check()) {
+								$adminRole = \App\role::where('libelle', 'Admin')->first();
+								$isAdminUser = ($adminRole && Auth::user()->role_id == $adminRole->id);
+							}
+						@endphp
+						<ul class="nav">
+							<li>
+								<a href="{{ route('accueilAd') }}" class="{{ $currentRoute == 'accueilAd' ? 'active' : '' }}">
+									<i class="lnr lnr-home"></i> <span>Dashboard</span>
+								</a>
+							</li>
+							<li>
+								<a href="#subPages" data-toggle="collapse" class="{{ $isDemandes ? 'active' : 'collapsed' }}">
+									<i class="lnr lnr-file-empty"></i> <span>Demandes</span> <i class="icon-submenu lnr lnr-chevron-left"></i>
+								</a>
+								<div id="subPages" class="collapse {{ $isDemandes ? 'in' : '' }}">
+									<ul class="nav">
+										<li><a href="{{ route('dmdForm') }}" class="{{ in_array($currentRoute, ['dmdForm', 'listeBenef']) ? 'active' : '' }}">Formations</a></li>
+										<li><a href="{{ route('dmdPrest') }}" class="{{ $currentRoute == 'dmdPrest' ? 'active' : '' }}">Prestations</a></li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<a href="{{ route('domForm') }}" class="{{ in_array($currentRoute, ['domForm', 'newForm', 'listeModules', 'newModule']) ? 'active' : '' }}">
+									<i class="lnr lnr-laptop"></i> <span>Domaines Formations</span>
+								</a>
+							</li>
+							<li>
+								<a href="{{ route('typePr') }}" class="{{ in_array($currentRoute, ['typePr', 'newPr']) ? 'active' : '' }}">
+									<i class="lnr lnr-code"></i> <span>Types Prestations</span>
+								</a>
+							</li>
+							<li>
+								<a href="{{ route('suggestions') }}" class="{{ $currentRoute == 'suggestions' ? 'active' : '' }}">
+									<i class="lnr lnr-alarm"></i> <span>Suggestions</span>
+									@if(isset($nbSugNonLu) && $nbSugNonLu > 0)
+										<span class="badge badge-status-danger" style="margin-left: auto;">{{ $nbSugNonLu }}</span>
+									@endif
+								</a>
+							</li>
+							<li>
+								<a href="{{ route('evenements') }}" class="{{ in_array($currentRoute, ['evenements', 'newEvenements']) ? 'active' : '' }}">
+									<i class="lnr lnr-calendar-full"></i> <span>Evènements</span>
+								</a>
+							</li>
+							@if($isAdminUser)
+								<li>
+									<a href="{{ route('user') }}" class="{{ in_array($currentRoute, ['user', 'newUser']) ? 'active' : '' }}">
+										<i class="lnr lnr-users"></i> <span>Utilisateurs</span>
+									</a>
+								</li>
+							@endif
+							<li>
+								<a href="{{ route('profil') }}" class="{{ in_array($currentRoute, ['profil', 'modifPro']) ? 'active' : '' }}">
+									<i class="lnr lnr-user"></i> <span>Mon Compte</span>
+								</a>
+							</li>
+						</ul>
+					@endif
+				</nav>
 			</div>
 		</div>
 		<!-- END LEFT SIDEBAR -->
         
         <!--MAIN-->
-        @yield('contenu')
+        <main id="admin-main">
+            @yield('contenu')
+        </main>
         <!--END MAIN-->
 		<div class="clearfix"></div>
 		<footer>
@@ -144,128 +189,7 @@
     <script src="{{asset('template/vendor/jquery/jquery.min.js')}}"></script>
 	<script src="{{asset('template/vendor/bootstrap/js/bootstrap.min.js')}}"></script>
 	<script src="{{asset('template/vendor/jquery-slimscroll/jquery.slimscroll.min.js')}}"></script>
-	<script src="{{asset('template/vendor/jquery.easy-pie-chart/jquery.easypiechart.min.js')}}"></script>
-	<script src="{{asset('template/vendor/chartist/js/chartist.min.js')}}"></script>
 	<script src="{{asset('template/scripts/klorofil-common.js')}}"></script>
-	<script>
-	/*$(function() {
-		var data, options;
-
-		// headline charts
-		data = {
-			labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-			series: [
-				[23, 29, 24, 40, 25, 24, 35],
-				[14, 25, 18, 34, 29, 38, 44],
-			]
-		};
-
-		options = {
-			height: 300,
-			showArea: true,
-			showLine: false,
-			showPoint: false,
-			fullWidth: true,
-			axisX: {
-				showGrid: false
-			},
-			lineSmooth: false,
-		};
-
-		new Chartist.Line('#headline-chart', data, options);
-
-
-		// visits trend charts
-		data = {
-			labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-			series: [{
-				name: 'series-real',
-				data: [200, 380, 350, 320, 410, 450, 570, 400, 555, 620, 750, 900],
-			}, {
-				name: 'series-projection',
-				data: [240, 350, 360, 380, 400, 450, 480, 523, 555, 600, 700, 800],
-			}]
-		};
-
-		options = {
-			fullWidth: true,
-			lineSmooth: false,
-			height: "270px",
-			low: 0,
-			high: 'auto',
-			series: {
-				'series-projection': {
-					showArea: true,
-					showPoint: false,
-					showLine: false
-				},
-			},
-			axisX: {
-				showGrid: false,
-
-			},
-			axisY: {
-				showGrid: false,
-				onlyInteger: true,
-				offset: 0,
-			},
-			chartPadding: {
-				left: 20,
-				right: 20
-			}
-		};
-
-		new Chartist.Line('#visits-trends-chart', data, options);
-
-
-		// visits chart
-		data = {
-			labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-			series: [
-				[6384, 6342, 5437, 2764, 3958, 5068, 7654]
-			]
-		};
-
-		options = {
-			height: 300,
-			axisX: {
-				showGrid: false
-			},
-		};
-
-		new Chartist.Bar('#visits-chart', data, options);
-
-
-		// real-time pie chart
-		var sysLoad = $('#system-load').easyPieChart({
-			size: 130,
-			barColor: function(percent) {
-				return "rgb(" + Math.round(200 * percent / 100) + ", " + Math.round(200 * (1.1 - percent / 100)) + ", 0)";
-			},
-			trackColor: 'rgba(245, 245, 245, 0.8)',
-			scaleColor: false,
-			lineWidth: 5,
-			lineCap: "square",
-			animate: 800
-		});
-
-		var updateInterval = 3000; // in milliseconds
-
-		setInterval(function() {
-			var randomVal;
-			randomVal = getRandomInt(0, 100);
-
-			sysLoad.data('easyPieChart').update(randomVal);
-			sysLoad.find('.percent').text(randomVal);
-		}, updateInterval);
-
-		function getRandomInt(min, max) {
-			return Math.floor(Math.random() * (max - min + 1)) + min;
-		}
-
-	});*/
-	</script>
-	
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9.10.0/dist/sweetalert2.all.js">//sweetalert</script>
 	<script type="text/javascript">
 		 function deleteT(id,mode,type)
@@ -293,10 +217,10 @@
 				/*read more about handling dismissals below*/
 				else if(result.dismiss===Swal.DismissReason.cancel)
 				{
-					SwalWithBootstrapButtons.fire(
-						'Cancelled',
-						'Your data is safe',
-						'error'
+					swalWithBootstrapButtons.fire(
+						'Annulé',
+						'Vos données sont conservées intactes.',
+						'info'
 					)
 				}
 			})

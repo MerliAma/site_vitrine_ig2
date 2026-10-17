@@ -14,22 +14,22 @@
                     @yield('menu')
                 @else
                     <li class="nav-item {{ request()->routeIs('accueil') ? 'active enCours' : '' }}">
-                        <a class="nav-link" href="{{route('accueil')}}">Accueil</a>
+                        <a class="nav-link" href="{{route('accueil')}}" {!! request()->routeIs('accueil') ? 'aria-current="page"' : '' !!}>Accueil</a>
                     </li>
                     <li class="nav-item {{ request()->routeIs('presentation') ? 'active enCours' : '' }}">
-                        <a class="nav-link" href="{{route('presentation')}}">Présentation</a>
+                        <a class="nav-link" href="{{route('presentation')}}" {!! request()->routeIs('presentation') ? 'aria-current="page"' : '' !!}>Présentation</a>
                     </li>
                     <li class="nav-item {{ request()->routeIs('formation*') ? 'active enCours' : '' }}">
-                        <a class="nav-link" href="{{route('formation')}}">Formations</a>
+                        <a class="nav-link" href="{{route('formation')}}" {!! request()->routeIs('formation*') ? 'aria-current="page"' : '' !!}>Formations</a>
                     </li>
                     <li class="nav-item {{ request()->routeIs('developpement') ? 'active enCours' : '' }}">
-                        <a class="nav-link" href="{{route('developpement')}}">Développement</a>
+                        <a class="nav-link" href="{{route('developpement')}}" {!! request()->routeIs('developpement') ? 'aria-current="page"' : '' !!}>Développement</a>
                     </li>
                     <li class="nav-item {{ request()->routeIs('contact') ? 'active enCours' : '' }}">
-                        <a class="nav-link" href="{{route('contact')}}">Contact</a>
+                        <a class="nav-link" href="{{route('contact')}}" {!! request()->routeIs('contact') ? 'aria-current="page"' : '' !!}>Contact</a>
                     </li>
                     <li class="nav-item {{ request()->routeIs('fdfp') ? 'active enCours' : '' }}">
-                        <a class="nav-link" href="{{route('fdfp')}}">Espace FDFP</a>
+                        <a class="nav-link" href="{{route('fdfp')}}" {!! request()->routeIs('fdfp') ? 'aria-current="page"' : '' !!}>Espace FDFP</a>
                     </li>
                 @endif
             </ul>

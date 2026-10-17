@@ -1,148 +1,142 @@
-@extends('Layouts/admin/baseAdmin',['title'=>'Evènements'])
-
-@section('navactive')
-<ul class="nav">
-	<li><a href="{{route('accueilAd')}}" class=""><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
-	<li>
-		<a href="#subPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i> <span>Demandes</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-		<div id="subPages" class="collapse ">
-			<ul class="nav">
-				<li><a href="{{route('dmdForm')}}" class="">Formations</a></li>
-				<li><a href="{{route('dmdPrest')}}" class="">Prestations</a></li>
-			</ul>
-		</div>
-	</li>
-	<li><a href="{{route('domForm')}}" class=""><i class="lnr lnr-laptop"></i> <span>Domaines Formations</span></a></li>
-	<li><a href="{{route('typePr')}}" class=""><i class="lnr lnr-code"></i> <span>Types Prestations</span></a></li>
-	<li><a href="{{route('suggestions')}}" class=""><i class="lnr lnr-alarm"></i> <span>Suggestions</span></a></li>
-	<li><a href="{{route('evenements')}}" class="active"><i class="lnr lnr-calendar-full"></i> <span>Evènements</span></a></li>
-    <?php
-	use App\role;
-	$idAdmin=role::where('libelle','Admin')->get();
-	if(Auth::user()->role_id==$idAdmin[0]->id)
-	{ ?>
-	<li><a href="{{route('user')}}" class=""><i class="lnr lnr-users"></i> <span>Utilisateurs</span></a></li>
-	<?php 
-	}
-	?>
-</ul>
-@endsection
+@extends('Layouts/admin/baseAdmin', ['title' => 'Événements & Formations Récentes'])
 
 @section('contenu')
-<!-- MAIN -->
-		<div class="main">
-			<!-- MAIN CONTENT -->
-			<div class="main-content">
-				<div class="container-fluid">
-					<h3 class="page-title">Evènements</h3> 
-					<div class="row">
-						<div class="col-md-12">
-							<!-- TABLE STRIPED -->
-							<div class="panel">
-								<!--<div class="panel-heading">
-									<h3 class="panel-title"></h3>
-								</div>-->
-								<div class="panel-body">
-								<?php
-									if(isset($_GET['info']) && $_GET['info']!="")
-									{
-										echo '<div class="alert alert-success alert-dismissible" role="alert">
-										<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-										'.$_GET['info'].'
-									</div>';
-									}
-									if(isset($_GET['info2']) && $_GET['info2']!="")
-									{
-										echo '<div class="alert alert-danger alert-dismissible" role="alert">
-										<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-										'.$_GET['info2'].'
-									</div>';
-									}
-								?>
-									<a href="{{route('newEvenements', 'mode=Ajouter')}}" ><button type="button" class="btn btn-default new"><i class="fa fa-plus-square"></i>&nbsp; Nouveau</button></a> <br/><br/><br/>
-									
-										@if($nblistEvent>0)
+<div class="main">
+    <div class="main-content">
+        <div class="container-fluid">
+            <!-- Header de page -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+                <div>
+                    <h2 class="h3 font-weight-bold text-dark mb-1">Événements & Séminaires Récents</h2>
+                    <p class="text-muted mb-0">Gestion des sessions de formation entreprises affichées sur la page d'accueil</p>
+                </div>
+                <div class="mt-3 mt-md-0">
+                    <a href="{{ route('newEvenements', 'mode=Ajouter') }}" class="btn btn-primary shadow-sm font-weight-bold">
+                        <i class="lnr lnr-plus-circle mr-1"></i> Nouvel événement
+                    </a>
+                </div>
+            </div>
 
-									<table class="table table-striped">
-										<thead>
-											<tr>
-												<th>N°</th>
-												<th>Theme Formation</th>
-												<th>Entreprise Concernée</th>
-												<th>Période</th>
-												<th>Action</th>
-												<th>Modification</th>
-												<th>Suppression</th>
-											</tr>
-										</thead>
-										<tbody>
-											<!--<tr>
-												<td>1</td>
-												<td>Mise en Pratique de la négociation-Vente</td>
-												<td>GMA</td>
-												<td>01/05/2020 - 15/05/2020</td>
-                                                <td><button type="submit" class="btn btn-primary" name=""><i class="lnr lnr-exit"></i>&nbsp;&nbsp;&nbsp; Retirer</button></td>
-												<td><a href="{{route('newEvenements')}}" ><button type="button" class="btn btn-success"><i class="fa fa-refresh"></i>&nbsp; Modifier</button></a></td>
-												<td><button type="submit" class="btn btn-danger" name=""><i class="fa fa-trash-o"></i>&nbsp; Supprimer</button></td>
-											</tr>-->
-											
-												@for($i=0;$i<$nblistEvent;$i++)
-													@php
-													$datedeb=substr($listeEvent[$i]->datedebEvent,8,2)."/".substr($listeEvent[$i]->datedebEvent,5,2)."/".substr($listeEvent[$i]->datedebEvent,0,4);
-													$datefin=substr($listeEvent[$i]->datefinEvent,8,2)."/".substr($listeEvent[$i]->datefinEvent,5,2)."/".substr($listeEvent[$i]->datefinEvent,0,4);
-													@endphp
-													<tr>
-													<td>{{$i+1}}</td>
-													<td>{{$listeEvent[$i]->themEvent}}</td>
-													<td>{{$listeEvent[$i]->entEvent}}</td>
-													<td>{{$datedeb}} - {{$datefin}}</td>
-													
-													@if($listeEvent[$i]->boolEvent==1)
-													
-													<td>
-													<form id="ret-form-{{$listeEvent[$i]->id}}" action="{{route('Ret','mode=Retirer&idEvent='.$listeEvent[$i]->id)}}"  method="post" style="display:none;">
-													@csrf
-													@method('GET')
-													</form>
-													<button type="submit" onclick="deleteT({{$listeEvent[$i]->id}},'Retirer','ret')" class="btn btn-primary"><i class="lnr lnr-exit"></i>&nbsp;&nbsp;&nbsp; Retirer</button></td>
-													
-													@else
-													
-													<td>
-													<form id="int-form-{{$listeEvent[$i]->id}}" action="{{route('Ret','mode=Integrer&idEvent='.$listeEvent[$i]->id)}}"  method="post" style="display:none;">
-													@csrf
-													@method('GET')
-													</form>
-													<button type="submit" onclick="deleteT({{$listeEvent[$i]->id}},'Mettre en ligne','int')" class="btn btn-primary" ><i class="lnr lnr-enter"></i>&nbsp; Afficher</button></td>
-													@endif
+            <!-- Messages d'alerte -->
+            @if(isset($_GET['info']) && $_GET['info'] != "")
+                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert">
+                    <i class="lnr lnr-checkmark-circle mr-2"></i> {{ $_GET['info'] }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
 
-												<td><a href="{{route('newEvenements','mode=Modifier&idEvent='.$listeEvent[$i]->id)}}" ><button type="button" class="btn btn-success"><i class="fa fa-refresh"></i>&nbsp; Modifier</button></a></td>
-												
-												<td>
-												<form id="delete-form-{{$listeEvent[$i]->id}}" action="{{route('Sup','mode=Supprimer&idEvent='.$listeEvent[$i]->id)}}" method="post" style="display:none;">
-													@csrf
-													@method('DELETE')
-												</form>
-												<button type="submit" onclick="deleteT({{$listeEvent[$i]->id}},'Supprimer','delete')" class="btn btn-danger"><i class="fa fa-trash-o"></i>&nbsp; Supprimer</button></td>
-											</tr>
-											@endfor
-										</tbody>
-									</table>
-									<p><span style="color:red">NB:</span> Uniquement quatre (4) évènements seront visible sur page d'accueil</p>
-									@else
-										<div class="alert alert-warning alert-dismissible" role="alert">
-										<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-										Aucun Evènement enregistré!
-										</div>
-									@endif
-								</div>
-							</div>
-							<!-- END TABLE STRIPED -->
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- END MAIN CONTENT -->
-		</div>
-		<!-- END MAIN -->
+            @if(isset($_GET['info2']) && $_GET['info2'] != "")
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
+                    <i class="lnr lnr-warning mr-2"></i> {{ $_GET['info2'] }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+
+            <!-- Carte principale -->
+            <div class="card border-0 shadow-sm" style="border-radius: var(--ig-radius-lg, 12px);">
+                <div class="card-header bg-white border-bottom py-3 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center">
+                    <h5 class="mb-2 mb-sm-0 font-weight-bold text-dark">
+                        <i class="lnr lnr-calendar-full mr-2 text-primary"></i> Liste des sessions programmées & passées
+                    </h5>
+                    <span class="badge badge-light border px-3 py-2 text-muted">
+                        Total : <strong class="text-dark">{{ $nblistEvent }}</strong> événement(s)
+                    </span>
+                </div>
+                <div class="card-body p-0">
+                    @if($nblistEvent > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="bg-light text-uppercase font-weight-bold" style="font-size: 0.8rem; letter-spacing: 0.5px;">
+                                    <tr>
+                                        <th class="border-0 px-4 py-3" style="width: 70px;">#</th>
+                                        <th class="border-0 py-3">Thème de la Formation</th>
+                                        <th class="border-0 py-3">Entreprise Bénéficiaire</th>
+                                        <th class="border-0 py-3">Période</th>
+                                        <th class="border-0 py-3 text-center" style="width: 140px;">Visibilité</th>
+                                        <th class="border-0 py-3 text-center" style="width: 130px;">Modification</th>
+                                        <th class="border-0 py-3 text-right pr-4" style="width: 130px;">Suppression</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for($i = 0; $i < $nblistEvent; $i++)
+                                        @php
+                                            $datedeb = substr($listeEvent[$i]->datedebEvent,8,2)."/".substr($listeEvent[$i]->datedebEvent,5,2)."/".substr($listeEvent[$i]->datedebEvent,0,4);
+                                            $datefin = substr($listeEvent[$i]->datefinEvent,8,2)."/".substr($listeEvent[$i]->datefinEvent,5,2)."/".substr($listeEvent[$i]->datefinEvent,0,4);
+                                        @endphp
+                                        <tr>
+                                            <td class="px-4 py-3 text-muted font-weight-bold">{{ $i + 1 }}</td>
+                                            <td class="py-3">
+                                                <div class="font-weight-bold text-dark">{{ $listeEvent[$i]->themEvent }}</div>
+                                            </td>
+                                            <td class="py-3">
+                                                <span class="badge badge-light border text-dark font-weight-bold px-2 py-1">
+                                                    <i class="lnr lnr-apartment mr-1 text-primary"></i> {{ $listeEvent[$i]->entEvent }}
+                                                </span>
+                                            </td>
+                                            <td class="py-3">
+                                                <div class="small text-muted font-weight-bold">
+                                                    <i class="lnr lnr-calendar-full mr-1"></i> {{ $datedeb }} <i class="lnr lnr-arrow-right mx-1"></i> {{ $datefin }}
+                                                </div>
+                                            </td>
+                                            <td class="py-3 text-center">
+                                                @if($listeEvent[$i]->boolEvent == 1)
+                                                    <form id="ret-form-{{ $listeEvent[$i]->id }}" action="{{ route('Ret', 'mode=Retirer&idEvent='.$listeEvent[$i]->id) }}" method="post" style="display:none;">
+                                                        @csrf
+                                                        @method('GET')
+                                                    </form>
+                                                    <button type="button" onclick="deleteT({{ $listeEvent[$i]->id }}, 'Retirer', 'ret')" class="btn btn-sm btn-outline-warning" title="Masquer du site public">
+                                                        <i class="lnr lnr-eye mr-1"></i> Retirer
+                                                    </button>
+                                                @else
+                                                    <form id="int-form-{{ $listeEvent[$i]->id }}" action="{{ route('Ret', 'mode=Integrer&idEvent='.$listeEvent[$i]->id) }}" method="post" style="display:none;">
+                                                        @csrf
+                                                        @method('GET')
+                                                    </form>
+                                                    <button type="button" onclick="deleteT({{ $listeEvent[$i]->id }}, 'Mettre en ligne', 'int')" class="btn btn-sm btn-outline-success" title="Publier sur la page d'accueil">
+                                                        <i class="lnr lnr-redo mr-1"></i> Afficher
+                                                    </button>
+                                                @endif
+                                            </td>
+                                            <td class="py-3 text-center">
+                                                <a href="{{ route('newEvenements', 'mode=Modifier&idEvent='.$listeEvent[$i]->id) }}" class="btn btn-sm btn-light border text-primary" title="Modifier l'événement">
+                                                    <i class="lnr lnr-pencil mr-1"></i> Modifier
+                                                </a>
+                                            </td>
+                                            <td class="py-3 text-right pr-4">
+                                                <form id="delete-form-{{ $listeEvent[$i]->id }}" action="{{ route('Sup', 'mode=Supprimer&idEvent='.$listeEvent[$i]->id) }}" method="post" style="display:none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                                <button type="button" onclick="deleteT({{ $listeEvent[$i]->id }}, 'Supprimer', 'delete')" class="btn btn-sm btn-outline-danger" title="Supprimer cet événement">
+                                                    <i class="lnr lnr-trash mr-1"></i> Supprimer
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endfor
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-3 bg-light border-top d-flex align-items-center text-muted small">
+                            <i class="lnr lnr-bullhorn mr-2 text-primary font-weight-bold"></i>
+                            <span><strong>Règle d'affichage :</strong> Seuls les <strong>quatre (4) événements</strong> publiés les plus récents sont mis en avant dans la section correspondante de la page d'accueil.</span>
+                        </div>
+                    @else
+                        <div class="text-center py-5">
+                            <i class="lnr lnr-calendar-full text-muted mb-3" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted">Aucun événement enregistré</h5>
+                            <p class="text-muted mb-3">Ajoutez un premier séminaire ou atelier pour valoriser les réalisations d'INTER-GROUPE.</p>
+                            <a href="{{ route('newEvenements', 'mode=Ajouter') }}" class="btn btn-primary">
+                                <i class="lnr lnr-plus-circle mr-1"></i> Nouvel événement
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

@@ -1,122 +1,117 @@
-@extends('Layouts/admin/baseAdmin',['title'=>'Ajouter ou Modifier un Evènement'])
-
-@section('navactive')
-<ul class="nav">
-	<li><a href="{{route('accueilAd')}}" class=""><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
-	<li>
-		<a href="#subPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i> <span>Demandes</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-		<div id="subPages" class="collapse ">
-			<ul class="nav">
-				<li><a href="{{route('dmdForm')}}" class="">Formations</a></li>
-				<li><a href="{{route('dmdPrest')}}" class="">Prestations</a></li>
-			</ul>
-		</div>
-	</li>
-	<li><a href="{{route('domForm')}}" class=""><i class="lnr lnr-laptop"></i> <span>Domaines Formations</span></a></li>
-	<li><a href="{{route('typePr')}}" class=""><i class="lnr lnr-code"></i> <span>Types Prestations</span></a></li>
-	<li><a href="{{route('suggestions')}}" class=""><i class="lnr lnr-alarm"></i> <span>Suggestions</span></a></li>
-	<li><a href="{{route('evenements')}}" class="active"><i class="lnr lnr-calendar-full"></i> <span>Evènements</span></a></li>
-    <?php
-	use App\role;
-	$idAdmin=role::where('libelle','Admin')->get();
-	if(Auth::user()->role_id==$idAdmin[0]->id)
-	{ ?>
-	<li><a href="{{route('user')}}" class=""><i class="lnr lnr-users"></i> <span>Utilisateurs</span></a></li>
-	<?php 
-	}
-	?>
-</ul>
-@endsection
+@extends('Layouts/admin/baseAdmin', ['title' => 'Gestion d\'Événement'])
 
 @section('contenu')
-<!-- MAIN -->
+<?php
+    use App\evenement;
+    $mode = $_GET['mode'] ?? 'Ajouter';
+    if ($mode === 'Modifier' && isset($_GET['idEvent'])) {
+        $idEvent = $_GET['idEvent'];
+        $event = evenement::find($idEvent);
+        $titrePage = "Modifier l'Événement";
+        $sousTitre = "Mise à jour des informations de la session";
+    } else {
+        $idEvent = null;
+        $event = null;
+        $titrePage = "Nouvel Événement";
+        $sousTitre = "Publication d'un séminaire ou atelier réalisé";
+    }
+?>
 <div class="main">
-			<!-- MAIN CONTENT -->
-			<div class="main-content">
-				<div class="container-fluid">
-                <?php
-                    use App\evenement;
-                    use App\suggestion;
-                    $nbSugNonLu=suggestion::where('boolSug','0')->count();
-                    if(isset($_GET['mode']))
-                    {
-                        $mode=$_GET['mode'];
-                        if($mode=="Modifier")
-                        {
-                            $idEvent=$_GET['idEvent'];
-                            $event=evenement::find($idEvent);
-                            $actionNewEv="Modification d'un Evènement";
-                        }
-                        else
-                        {
-                            $idEvent=null;
-                            $actionNewEv="Ajout d'un nouvel Evènement";
-                        }
-                    }
-                    /*if(isset($idEvent2) && isset($mode2))
-                    {
-                        $idEvent=$idEvent2;
-                        $mode=$mode2;
-                    }*/
-                    
-                ?>
-					<h3 class="page-title"><?php if(isset($actionNewEv)) {echo $actionNewEv;} ?></h3> 
-					<div class="row">
-						<div class="col-md-5 formulaire">
-                        
-                        <?php
-                           
-                            if(isset($info1) && $info1!="")
-                            {
-                                echo '<div class="alert alert-danger alert-dismissible" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                '.$info1.'
-                            </div>';
-                            }
-                            if(isset($info2) && $info2!="")
-                            {
-                                echo '<div class="alert alert-danger alert-dismissible" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                '.$info2.'
-                            </div>';
-                            }
-                        
-                        ?>
-                            <!--<div class="panel">-->
-                                <form action="{{route('newEvenements2','mode='.$mode.'&idEvent='.$idEvent)}}" method="post">
+    <div class="main-content">
+        <div class="container-fluid">
+            <!-- Header de page -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+                <div>
+                    <h2 class="h3 font-weight-bold text-dark mb-1">{{ $titrePage }}</h2>
+                    <p class="text-muted mb-0">{{ $sousTitre }}</p>
+                </div>
+                <div class="mt-3 mt-md-0">
+                    <a href="{{ route('evenements') }}" class="btn btn-outline-secondary">
+                        <i class="lnr lnr-arrow-left mr-1"></i> Retour aux événements
+                    </a>
+                </div>
+            </div>
+
+            <!-- Messages d'erreur éventuels renvoyés par le contrôleur -->
+            @if(isset($info1) && $info1 != "")
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
+                    <i class="lnr lnr-warning mr-2"></i> {{ $info1 }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+
+            @if(isset($info2) && $info2 != "")
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
+                    <i class="lnr lnr-warning mr-2"></i> {{ $info2 }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+
+            <!-- Formulaire -->
+            <div class="row">
+                <div class="col-lg-7 col-md-9">
+                    <div class="card border-0 shadow-sm" style="border-radius: var(--ig-radius-lg, 12px);">
+                        <div class="card-header bg-white border-bottom py-3">
+                            <h5 class="mb-0 font-weight-bold text-dark">
+                                <i class="lnr lnr-calendar-full mr-2 text-primary"></i> Paramètres de la Session
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form action="{{ route('newEvenements2', 'mode='.$mode.'&idEvent='.$idEvent) }}" method="post">
                                 @csrf
-                                    <div class="form-group">
-                                        <label for="Input2" class="text-info">Thème Formation</label>
-                                        <input type="text" class="form-control" id="Input2" name="themEvent" required="required" value="{{$event->themEvent ?? old('themEvent')}}"> <!--if(isset($event)) {echo $event->themEvent;} ?>-->
+                                <div class="form-group mb-3">
+                                    <label for="themEvent" class="font-weight-bold text-dark">
+                                        Thème de la formation <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" id="themEvent" name="themEvent" 
+                                           value="{{ $event->themEvent ?? old('themEvent') }}" 
+                                           placeholder="Ex : Négociation commerciale grands comptes et vente B2B" required>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="entEvent" class="font-weight-bold text-dark">
+                                        Entreprise ou Organisation bénéficiaire <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" id="entEvent" name="entEvent" 
+                                           value="{{ $event->entEvent ?? old('entEvent') }}" 
+                                           placeholder="Ex : Grands Moulins d'Abidjan (GMA)" required>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 form-group mb-3">
+                                        <label for="datedebEvent" class="font-weight-bold text-dark">
+                                            Date de début <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="date" class="form-control" id="datedebEvent" name="datedebEvent" 
+                                               value="{{ $event->datedebEvent ?? old('datedebEvent') }}" required>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="Input3" class="text-info">Entreprise Concernée</label>
-                                        <input type="text" class="form-control" id="Input3" name="entEvent" required="required" value="{{$event->entEvent ?? old('entEvent')}}"> 
+                                    <div class="col-md-6 form-group mb-4">
+                                        <label for="datefinEvent" class="font-weight-bold text-dark">
+                                            Date de fin <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="date" class="form-control" id="datefinEvent" name="datefinEvent" 
+                                               value="{{ $event->datefinEvent ?? old('datefinEvent') }}" required>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="Input4" class="text-info">Date Debut</label>
-                                        <input type="date" class="form-control" id="Input4" name="datedebEvent" required="required" value="{{$event->datedebEvent ?? old('datedebEvent')}}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="Input5" class="text-info">Date Fin</label>
-                                        <input type="date" class="form-control" id="Input5" name="datefinEvent" required="required" value="{{$event->datefinEvent ?? old('datefinEvent')}}">
-                                    </div>
-                                    
-                                    <br/>
-                                    <div class="form-group">
-                                        <div class="col">
-                                        <center><button type="submit" class="btn btn-success" name="validEvent"><i class="lnr lnr-thumbs-up"> </i>Valider</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <a href="{{route('evenements')}}"><button type="button" class="btn btn-danger"><i class="lnr lnr-cross"> </i>Annuler</button></a></center>
-                                        </div>
-                                    </div>
-                                </form>
-                            <!--</div>-->
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- END MAIN CONTENT -->
-		</div>
-		<!-- END MAIN -->
-<!--END MAIN--> 
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-end pt-3 border-top">
+                                    <a href="{{ route('evenements') }}" class="btn btn-light mr-2">
+                                        Annuler
+                                    </a>
+                                    <button type="submit" class="btn btn-success px-4" name="validEvent">
+                                        <i class="lnr lnr-check mr-1"></i> Enregistrer l'événement
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

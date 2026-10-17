@@ -108,7 +108,7 @@
             @endif
         </div>
         <div class="col-6 pl-1">
-            <a class="btn btn-outline-secondary btn-block btn-sm" href="http://webmail1.hostinger.fr" target="_blank" rel="noopener noreferrer">
+            <a class="btn btn-outline-secondary btn-block btn-sm" href="https://webmail1.hostinger.fr" target="_blank" rel="noopener noreferrer">
                 <i class="ion-ios-mail mr-1" aria-hidden="true"></i> Webmail
             </a>
         </div>

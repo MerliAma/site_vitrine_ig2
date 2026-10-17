@@ -1,196 +1,101 @@
-
+@extends('Layouts/app', [
+    'titre' => 'Création de Compte Administrateur',
+    'sousTitre' => 'Enregistrement d\'un compte d\'accès au back-office INTER-GROUPE'
+])
 
 @section('content')
-<!--<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
+@if($errors->any())
+    <div class="alert alert-danger py-2 px-3 mb-3 small" role="alert">
+        <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"></i>
+        Veuillez corriger les erreurs de saisie ci-dessous.
+    </div>
+@endif
 
-                        <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
+<form class="form-auth-small" action="{{ route('register') }}" method="POST">
+    @csrf
 
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+    <input type="hidden" name="role_id" value="1">
 
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+    <div class="form-group mb-2">
+        <label for="name" class="control-label font-weight-bold">
+            Nom et Prénom(s) <span class="required-star text-danger" aria-hidden="true">*</span>
+        </label>
+        <input id="name" type="text" placeholder="Ex. Koffi Jean-Marc" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus aria-required="true">
+        @error('name')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
 
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+    <div class="form-group mb-2">
+        <label for="telUser" class="control-label font-weight-bold">
+            Numéro de Téléphone <span class="required-star text-danger" aria-hidden="true">*</span>
+        </label>
+        <input id="telUser" type="tel" placeholder="0701020304" class="form-control @error('telUser') is-invalid @enderror" name="telUser" value="{{ old('telUser') }}" required pattern="[0-9]{10}" maxlength="10" aria-required="true">
+        <small class="form-text text-muted">Format à 10 chiffres (standard ivoirien)</small>
+        @error('telUser')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+    <div class="form-group mb-2">
+        <label for="email" class="control-label font-weight-bold">
+            Adresse E-mail <span class="required-star text-danger" aria-hidden="true">*</span>
+        </label>
+        <input id="email" type="email" placeholder="admin@intergroupe-ci.com" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" aria-required="true">
+        @error('email')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
 
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+    <div class="form-group mb-2">
+        <label for="username" class="control-label font-weight-bold">
+            Identifiant de Connexion (Login) <span class="required-star text-danger" aria-hidden="true">*</span>
+        </label>
+        <input id="username" type="text" placeholder="Ex. jkoffi" maxlength="20" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autocomplete="username" aria-required="true">
+        @error('username')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
 
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Register') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    <div class="form-row mb-3">
+        <div class="col-md-6 mb-2">
+            <label for="password" class="control-label font-weight-bold">
+                Mot de Passe <span class="required-star text-danger" aria-hidden="true">*</span>
+            </label>
+            <input id="password" type="password" placeholder="Minimum 6 caractères" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" aria-required="true">
+            @error('password')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+        <div class="col-md-6 mb-2">
+            <label for="password-confirm" class="control-label font-weight-bold">
+                Confirmation <span class="required-star text-danger" aria-hidden="true">*</span>
+            </label>
+            <input id="password-confirm" type="password" placeholder="Confirmer mot de passe" class="form-control" name="password_confirmation" required autocomplete="new-password" aria-required="true">
         </div>
     </div>
-</div>-->
-@endsection
 
-@extends('Layouts/admin/baseAdmin',['title'=>'Nouvel Utilisateur'])
+    <button type="submit" class="btn btn-primary btn-lg btn-block shadow-sm">
+        <i class="fa fa-user-plus mr-2" aria-hidden="true"></i>
+        <span>Enregistrer le compte</span>
+    </button>
 
-@section('navactive')
-<ul class="nav">
-	<li><a href="{{route('accueilAd')}}" class=""><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
-	<li>
-		<a href="#subPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i> <span>Demandes</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-		<div id="subPages" class="collapse ">
-			<ul class="nav">
-				<li><a href="{{route('dmdForm')}}" class="">Formations</a></li>
-				<li><a href="{{route('dmdPrest')}}" class="">Prestations</a></li>
-			</ul>
-		</div>
-	</li>
-	<li><a href="{{route('domForm')}}" class=""><i class="lnr lnr-laptop"></i> <span>Domaines Formations</span></a></li>
-	<li><a href="{{route('typePr')}}" class=""><i class="lnr lnr-code"></i> <span>Types Prestations</span></a></li>
-    <li><a href="{{route('suggestions')}}" class=""><i class="lnr lnr-alarm"></i> <span>Suggestions</span></a></li>
-    <li><a href="{{route('evenements')}}" class=""><i class="lnr lnr-calendar-full"></i> <span>Evènements</span></a></li>
-    <?php
-	if(Auth::user()->role_id==1)
-	{ ?>
-	<li><a href="{{route('user')}}" class=""><i class="lnr lnr-users"></i> <span>Utilisateurs</span></a></li>
-	<?php 
-	}
-	?>
-</ul>
-@endsection
-
-@section('contenu')
-<!-- MAIN -->
-<div class="main">
-			<!-- MAIN CONTENT -->
-			<div class="main-content">
-				<div class="container-fluid">
-                <?php
-                    use App\User;
-                    use App\suggestion;
-                    use App\role;
-                    $role=role::all();
-
-                    $nbSugNonLu=suggestion::where('boolSug','0')->count();
-                    $idUser=null;
-                    $actionNewU="Ajout d'un nouvel Utilisateur";
-                ?>
-					<h3 class="page-title"><?php if(isset($actionNewU)) {echo $actionNewU;} ?></h3> 
-					<div class="row">
-                    @error('name')
-                        <span id="erreur">
-    	                    {{ $message }}
-                        </span>
-                    @enderror
-                    @error('password')
-                        <span id="erreur">
-    	                    {{ $message }}
-                        </span>
-                    @enderror
-                    @error('username')
-                        <span id="erreur">
-    	                    {{ $message }}
-                        </span>
-                    @enderror
-                    <style>#erreur{color:red; font-size:15px}</style>
-						<div class="col-md-5 formulaire">
-                            <!--<div class="panel">register-->
-                                <form action="{{ route('register','mode='.$_GET['mode'].'&idUser='.$idUser) }}" method="post">
-                                @csrf
-                                    <div class="form-group">
-                                        <label for="name">Noms et Prénoms</label>
-                                        <input type="text" id="name" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="Input3">Téléphone</label>
-                                        <input type="number" class="form-control" id="Input3" placeholder="05050505" name="telUser" required="required">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="username">Login</label>
-                                        <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autocomplete="username">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password">Mot de Passe</label>
-                                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password-confirm">Confirmation du Mot de Passe</label>
-                                        <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="Select1">Niveau Accès</label>
-                                        <select class="form-control" id="Select1" name="role_id">
-                                        <?php
-                                        for($i=0;$i<count($role);$i++)
-                                        {
-                                            echo '<option value="'.$role[$i]->id.'" selected="selected">'.$role[$i]->libelle.'</option>';
-                                        }
-                                        ?>
-                                        </select>
-                                    </div>
-                                    <br/><br/>
-                                    <div class="form-group">
-                                        <div class="col">
-                                        <center><button type="submit" class="btn btn-success"><i class="lnr lnr-thumbs-up"> </i>Valider</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <a href="{{route('user')}}"><button type="button" class="btn btn-danger"><i class="lnr lnr-cross"> </i>Annuler</button></a></center>
-                                        </div>
-                                    </div>
-                                </form>
-                            <!--</div>-->
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- END MAIN CONTENT -->
-		</div>
-<!--END MAIN--> 
+    <div class="auth-footer-links">
+        <span class="text-muted">Vous possédez déjà un compte ?</span>
+        <a href="{{ route('login') }}" class="font-weight-bold text-primary ml-1">
+            Se connecter
+        </a>
+    </div>
+</form>
 @endsection

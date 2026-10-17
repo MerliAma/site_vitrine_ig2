@@ -1,84 +1,81 @@
-@extends('Layouts/admin/baseAdmin',['title'=>'Nouveau Domaine de Formation'])
-
-@section('navactive')
-<ul class="nav">
-	<li><a href="{{route('accueilAd')}}" class=""><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
-	<li>
-		<a href="#subPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i> <span>Demandes</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-		<div id="subPages" class="collapse ">
-			<ul class="nav">
-				<li><a href="{{route('dmdForm')}}" class="">Formations</a></li>
-				<li><a href="{{route('dmdPrest')}}" class="">Prestations</a></li>
-			</ul>
-		</div>
-	</li>
-	<li><a href="{{route('domForm')}}" class="active"><i class="lnr lnr-laptop"></i> <span>Domaines Formations</span></a></li>
-	<li><a href="{{route('typePr')}}" class=""><i class="lnr lnr-code"></i> <span>Types Prestations</span></a></li>
-	<li><a href="{{route('suggestions')}}" class=""><i class="lnr lnr-alarm"></i> <span>Suggestions</span></a></li>
-	<li><a href="{{route('evenements')}}" class=""><i class="lnr lnr-calendar-full"></i> <span>Evènements</span></a></li>
-    <?php
-	use App\role;
-	$idAdmin=role::where('libelle','Admin')->get();
-	if(Auth::user()->role_id==$idAdmin[0]->id)
-	{ ?>
-	<li><a href="{{route('user')}}" class=""><i class="lnr lnr-users"></i> <span>Utilisateurs</span></a></li>
-	<?php 
-	}
-	?>
-</ul>
-@endsection
+@extends('Layouts/admin/baseAdmin', ['title' => 'Gestion de Module'])
 
 @section('contenu')
-<!-- MAIN -->
+<?php
+    use App\Module;
+    use App\DomaineFormation;
+    $idDomForm = $_GET['idDomForm'] ?? null;
+    $domaine = $idDomForm ? DomaineFormation::find($idDomForm) : null;
+    if (isset($_GET['idModule'])) {
+        $Mod = Module::find($_GET['idModule']);
+        $idModule = $_GET['idModule'];
+        $actionNewMod = "Modifier le Module";
+        $subTitle = "Mise à jour de l'intitulé du module";
+    } else {
+        $idModule = null;
+        $actionNewMod = "Nouveau Module de Formation";
+        $subTitle = "Ajout d'un module au programme de formation";
+    }
+?>
 <div class="main">
-			<!-- MAIN CONTENT -->
-			<div class="main-content">
-				<div class="container-fluid">
-				<?php
-                    use App\Module;
-                    use App\suggestion;
-                    $nbSugNonLu=suggestion::where('boolSug','0')->count();
-                    if(isset($_GET['idModule']))
-                    {
-                        $Mod=Module::find($_GET['idModule']);
-                        $idModule=$_GET['idModule'];
-                        $actionNewMod="Modification d'un Module";
-                    }
-                    else
-                    {
-                        $idModule=null;
-                        $actionNewMod="Ajout d'un nouveau Module";
-                    }
-                ?>
-					<h3 class="page-title"><?php if(isset($actionNewMod)) {echo $actionNewMod;} ?></h3> 
-					<div class="row">
-						<div class="col-md-5 formulaire">
-                            <!--<div class="panel">-->
-							<form action="{{route('newModule2','idModule='.$idModule.'&idDomForm='.$_GET['idDomForm'])}}" method="post">
-							@csrf
-                                    <!--<div class="form-group">
-                                        <label for="Input1">Identifiant</label>
-                                        <input type="text" class="form-control" id="Input1" placeholder="" name="idForm">
-                                    </div>-->
-                                    <div class="form-group">
-                                        <label for="Input2" class="text-info">Libellé du Module</label>
-                                        <input type="text" class="form-control" id="Input2" name="libMod" value="<?php if(isset($Mod)) {echo $Mod->libMod;} ?>" required="required">
-                                    </div>
-                                    <br/><br/>
-                                    <div class="form-group">
-                                        <div class="col">
-                                        <center><button type="submit" class="btn btn-success" name="validForm"><i class="lnr lnr-thumbs-up"> </i>Valider</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <a href="{{route('listeModules','idDomForm='.$_GET['idDomForm'])}}"><button type="button" class="btn btn-danger"><i class="lnr lnr-cross"> </i>Annuler</button></a></center>
-                                        </div>
-                                    </div>
-                                </form>
-                            <!--</div>-->
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- END MAIN CONTENT -->
-		</div>
-		<!-- END MAIN -->
-<!--END MAIN--> 
+    <div class="main-content">
+        <div class="container-fluid">
+            <!-- Header de page -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+                <div>
+                    <h2 class="h3 font-weight-bold text-dark mb-1">{{ $actionNewMod }}</h2>
+                    <p class="text-muted mb-0">
+                        {{ $subTitle }} 
+                        @if($domaine)
+                            &bull; Domaine : <span class="badge badge-light border text-primary font-weight-bold">{{ $domaine->libDomForm }}</span>
+                        @endif
+                    </p>
+                </div>
+                <div class="mt-3 mt-md-0">
+                    <a href="{{ route('listeModules', 'idDomForm='.$idDomForm) }}" class="btn btn-outline-secondary">
+                        <i class="lnr lnr-arrow-left mr-1"></i> Retour aux modules
+                    </a>
+                </div>
+            </div>
+
+            <!-- Formulaire -->
+            <div class="row">
+                <div class="col-lg-6 col-md-8">
+                    <div class="card border-0 shadow-sm" style="border-radius: var(--ig-radius-lg, 12px);">
+                        <div class="card-header bg-white border-bottom py-3">
+                            <h5 class="mb-0 font-weight-bold text-dark">
+                                <i class="lnr lnr-pencil mr-2 text-primary"></i> Paramètres du Module
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form action="{{ route('newModule2', 'idModule='.$idModule.'&idDomForm='.$idDomForm) }}" method="post">
+                                @csrf
+                                <div class="form-group mb-4">
+                                    <label for="libMod" class="font-weight-bold text-dark">
+                                        Intitulé du module <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control form-control-lg" id="libMod" name="libMod" 
+                                           value="{{ $Mod->libMod ?? old('libMod') }}" 
+                                           placeholder="Ex : Administration Windows Server 2022" required>
+                                    <small class="form-text text-muted">
+                                        Ce libellé sera visible par les entreprises et stagiaires lors des inscriptions.
+                                    </small>
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-end pt-3 border-top">
+                                    <a href="{{ route('listeModules', 'idDomForm='.$idDomForm) }}" class="btn btn-light mr-2">
+                                        Annuler
+                                    </a>
+                                    <button type="submit" class="btn btn-success px-4" name="validForm">
+                                        <i class="lnr lnr-check mr-1"></i> Enregistrer le module
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
