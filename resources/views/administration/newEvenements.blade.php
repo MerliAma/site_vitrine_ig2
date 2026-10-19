@@ -3,9 +3,9 @@
 @section('contenu')
 <?php
     use App\evenement;
-    $mode = $_GET['mode'] ?? 'Ajouter';
-    if ($mode === 'Modifier' && isset($_GET['idEvent'])) {
-        $idEvent = $_GET['idEvent'];
+    $mode = request()->input('mode', $_GET['mode'] ?? 'Ajouter');
+    $idEvent = request()->input('idEvent', $_GET['idEvent'] ?? null);
+    if ($mode === 'Modifier' && $idEvent) {
         $event = evenement::find($idEvent);
         $titrePage = "Modifier l'Événement";
         $sousTitre = "Mise à jour des informations de la session";
@@ -61,8 +61,10 @@
                             </h5>
                         </div>
                         <div class="card-body p-4">
-                            <form action="{{ route('newEvenements2', 'mode='.$mode.'&idEvent='.$idEvent) }}" method="post">
+                            <form action="{{ route('newEvenements2', ['mode' => $mode, 'idEvent' => $idEvent]) }}" method="post">
                                 @csrf
+                                <input type="hidden" name="mode" value="{{ $mode }}">
+                                <input type="hidden" name="idEvent" value="{{ $idEvent }}">
                                 <div class="form-group mb-3">
                                     <label for="themEvent" class="font-weight-bold text-dark">
                                         Thème de la formation <span class="text-danger">*</span>

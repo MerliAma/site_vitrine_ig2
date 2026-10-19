@@ -6,11 +6,9 @@
 @section('content')
 
 @if (session('resent'))
-    <div class="alert alert-success py-2 px-3 mb-3 small d-flex align-items-center" role="alert">
-        <i class="fa fa-check-circle mr-2 text-success" aria-hidden="true"></i>
-        <div>
-            Un nouveau lien de vérification a été transmis à votre adresse électronique.
-        </div>
+    <div class="auth-alert auth-alert-success" role="alert">
+        <i class="fa fa-check-circle auth-alert-icon" aria-hidden="true"></i>
+        <div>Un nouveau lien de vérification a été transmis à votre adresse électronique.</div>
     </div>
 @endif
 
@@ -24,23 +22,23 @@
 </div>
 
 @if (Route::has('verification.resend'))
-<form class="form-auth-small" method="POST" action="{{ route('verification.resend') }}">
+<form class="auth-form" method="POST" action="{{ route('verification.resend') }}">
     @csrf
 
-    <button type="submit" class="btn btn-primary btn-lg btn-block shadow-sm">
-        <i class="fa fa-paper-plane mr-2" aria-hidden="true"></i>
+    <button type="submit" class="btn btn-auth-submit">
+        <i class="fa fa-paper-plane" aria-hidden="true"></i>
         <span>Renvoyer l'e-mail de confirmation</span>
     </button>
 
     <div class="auth-footer-links">
-        <a href="{{ route('login') }}" class="text-muted">
+        <a href="{{ route('login') }}" class="auth-back-link">
             <i class="fa fa-arrow-left mr-1" aria-hidden="true"></i> Retour à la connexion
         </a>
     </div>
 </form>
 @else
 <div class="auth-footer-links">
-    <a href="{{ route('login') }}" class="btn btn-primary btn-block text-white">
+    <a href="{{ route('login') }}" class="btn btn-auth-submit text-white">
         <i class="fa fa-arrow-left mr-1" aria-hidden="true"></i> Retour à la page de connexion
     </a>
 </div>

@@ -5,9 +5,9 @@
     <div class="main-content">
         <div class="container-fluid">
             <!-- Header de page -->
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+            <div class="admin-page-header">
                 <div>
-                    <h2 class="h3 font-weight-bold text-dark mb-1">Suggestions & Messages Reçus</h2>
+                    <h2 class="h3 font-weight-bold text-dark mb-1">Suggestions</h2>
                     <p class="text-muted mb-0">Retours d'expérience, avis et suggestions envoyés par les visiteurs du site</p>
                 </div>
             </div>

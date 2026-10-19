@@ -7,7 +7,7 @@
 	<div class="main-content">
 		<div class="container-fluid">
 			
-			<div class="page-title">
+			<div class="admin-page-header">
 				<div>
 					<h3 style="margin: 0; font-size: 1.625rem; font-weight: 700; color: var(--ig-secondary, #1A3A6B);">
 						Modules : <span style="color: var(--ig-primary, #0A6E3F);">{{ $libDomForm }}</span>
@@ -16,12 +16,12 @@
 						Gestion des programmes et thématiques spécifiques rattachés à ce domaine
 					</p>
 				</div>
-				<div style="display: flex; gap: 8px;">
-					<a href="{{ route('domForm') }}" class="btn btn-default" style="border-radius: var(--ig-radius-md, 8px);">
-						<i class="fa fa-arrow-left"></i> Domaines
+				<div style="display: flex; gap: 10px;">
+					<a href="{{ route('domForm') }}" class="btn btn-default font-weight-bold" style="border-radius: var(--ig-radius-md, 8px); padding: 9px 16px;">
+						<i class="fa fa-arrow-left mr-1"></i> Domaines
 					</a>
-					<a href="{{ route('newModule','idDomForm='.$idDomForm) }}" class="btn btn-primary" style="border-radius: var(--ig-radius-md, 8px); font-weight: 600;">
-						<i class="fa fa-plus-circle"></i> Nouveau Module
+					<a href="{{ route('newModule','idDomForm='.$idDomForm) }}" class="btn btn-primary font-weight-bold" style="border-radius: var(--ig-radius-md, 8px); font-weight: 600; padding: 9px 18px; box-shadow: var(--ig-shadow-xs);">
+						<i class="fa fa-plus-circle mr-1"></i> Nouveau Module
 					</a>
 				</div>
 			</div>
@@ -113,4 +113,4 @@
 	<!-- END MAIN CONTENT -->
 </div>
 <!-- END MAIN -->
-@endsection
+@endsection

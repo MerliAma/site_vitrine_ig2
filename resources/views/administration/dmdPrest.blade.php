@@ -7,7 +7,7 @@
 	<div class="main-content">
 		<div class="container-fluid">
 			
-			<div class="page-title">
+			<div class="admin-page-header">
 				<div>
 					<h3 style="margin: 0; font-size: 1.625rem; font-weight: 700; color: var(--ig-secondary, #1A3A6B);">Demandes de Prestations</h3>
 					<p style="margin: 4px 0 0; font-size: 0.875rem; color: var(--ig-text-muted, #64748B);">Suivi des demandes d'ingénierie informatique, développement spécifique et intégration logicielle</p>
@@ -141,4 +141,4 @@
 	<!-- END MAIN CONTENT -->
 </div>
 <!-- END MAIN -->
-@endsection
+@endsection

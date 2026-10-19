@@ -5,13 +5,13 @@
     <div class="main-content">
         <div class="container-fluid">
             <!-- Header de page -->
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+            <div class="admin-page-header">
                 <div>
                     <h2 class="h3 font-weight-bold text-dark mb-1">Événements & Séminaires Récents</h2>
                     <p class="text-muted mb-0">Gestion des sessions de formation entreprises affichées sur la page d'accueil</p>
                 </div>
-                <div class="mt-3 mt-md-0">
-                    <a href="{{ route('newEvenements', 'mode=Ajouter') }}" class="btn btn-primary shadow-sm font-weight-bold">
+                <div>
+                    <a href="{{ route('newEvenements', ['mode' => 'Ajouter']) }}" class="btn btn-primary font-weight-bold" style="border-radius: var(--ig-radius-md, 8px); padding: 9px 18px; box-shadow: var(--ig-shadow-xs);">
                         <i class="lnr lnr-plus-circle mr-1"></i> Nouvel événement
                     </a>
                 </div>
@@ -84,17 +84,15 @@
                                             </td>
                                             <td class="py-3 text-center">
                                                 @if($listeEvent[$i]->boolEvent == 1)
-                                                    <form id="ret-form-{{ $listeEvent[$i]->id }}" action="{{ route('Ret', 'mode=Retirer&idEvent='.$listeEvent[$i]->id) }}" method="post" style="display:none;">
+                                                    <form id="ret-form-{{ $listeEvent[$i]->id }}" action="{{ route('Ret', ['mode' => 'Retirer', 'idEvent' => $listeEvent[$i]->id]) }}" method="post" style="display:none;">
                                                         @csrf
-                                                        @method('GET')
                                                     </form>
                                                     <button type="button" onclick="deleteT({{ $listeEvent[$i]->id }}, 'Retirer', 'ret')" class="btn btn-sm btn-outline-warning" title="Masquer du site public">
                                                         <i class="lnr lnr-eye mr-1"></i> Retirer
                                                     </button>
                                                 @else
-                                                    <form id="int-form-{{ $listeEvent[$i]->id }}" action="{{ route('Ret', 'mode=Integrer&idEvent='.$listeEvent[$i]->id) }}" method="post" style="display:none;">
+                                                    <form id="int-form-{{ $listeEvent[$i]->id }}" action="{{ route('Ret', ['mode' => 'Integrer', 'idEvent' => $listeEvent[$i]->id]) }}" method="post" style="display:none;">
                                                         @csrf
-                                                        @method('GET')
                                                     </form>
                                                     <button type="button" onclick="deleteT({{ $listeEvent[$i]->id }}, 'Mettre en ligne', 'int')" class="btn btn-sm btn-outline-success" title="Publier sur la page d'accueil">
                                                         <i class="lnr lnr-redo mr-1"></i> Afficher
@@ -102,12 +100,12 @@
                                                 @endif
                                             </td>
                                             <td class="py-3 text-center">
-                                                <a href="{{ route('newEvenements', 'mode=Modifier&idEvent='.$listeEvent[$i]->id) }}" class="btn btn-sm btn-light border text-primary" title="Modifier l'événement">
+                                                <a href="{{ route('newEvenements', ['mode' => 'Modifier', 'idEvent' => $listeEvent[$i]->id]) }}" class="btn btn-sm btn-light border text-primary" title="Modifier l'événement">
                                                     <i class="lnr lnr-pencil mr-1"></i> Modifier
                                                 </a>
                                             </td>
                                             <td class="py-3 text-right pr-4">
-                                                <form id="delete-form-{{ $listeEvent[$i]->id }}" action="{{ route('Sup', 'mode=Supprimer&idEvent='.$listeEvent[$i]->id) }}" method="post" style="display:none;">
+                                                <form id="delete-form-{{ $listeEvent[$i]->id }}" action="{{ route('Sup', ['mode' => 'Supprimer', 'idEvent' => $listeEvent[$i]->id]) }}" method="post" style="display:none;">
                                                     @csrf
                                                     @method('DELETE')
                                                 </form>
@@ -129,7 +127,7 @@
                             <i class="lnr lnr-calendar-full text-muted mb-3" style="font-size: 3rem;"></i>
                             <h5 class="text-muted">Aucun événement enregistré</h5>
                             <p class="text-muted mb-3">Ajoutez un premier séminaire ou atelier pour valoriser les réalisations d'INTER-GROUPE.</p>
-                            <a href="{{ route('newEvenements', 'mode=Ajouter') }}" class="btn btn-primary">
+                            <a href="{{ route('newEvenements', ['mode' => 'Ajouter']) }}" class="btn btn-primary">
                                 <i class="lnr lnr-plus-circle mr-1"></i> Nouvel événement
                             </a>
                         </div>

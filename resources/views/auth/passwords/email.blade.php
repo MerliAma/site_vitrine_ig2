@@ -6,50 +6,51 @@
 @section('content')
 
 @if (session('status'))
-    <div class="alert alert-success py-2 px-3 mb-3 small d-flex align-items-center" role="alert">
-        <i class="fa fa-check-circle mr-2 text-success" aria-hidden="true"></i>
-        <div>
-            {{ session('status') }}
-        </div>
+    <div class="auth-alert auth-alert-success" role="alert">
+        <i class="fa fa-check-circle auth-alert-icon" aria-hidden="true"></i>
+        <div>{{ session('status') }}</div>
     </div>
 @endif
 
 @error('email')
-    <div class="alert alert-danger py-2 px-3 mb-3 small d-flex align-items-center" role="alert">
-        <i class="fa fa-exclamation-circle mr-2 text-danger" aria-hidden="true"></i>
-        <div>
-            {{ $message }}
-        </div>
+    <div class="auth-alert auth-alert-danger" role="alert">
+        <i class="fa fa-exclamation-circle auth-alert-icon" aria-hidden="true"></i>
+        <div>{{ $message }}</div>
     </div>
 @enderror
 
-<form class="form-auth-small" method="POST" action="{{ route('password.email') }}">
+<form class="auth-form" method="POST" action="{{ route('password.email') }}">
     @csrf
 
-    <div class="form-group mb-3">
-        <label for="email" class="control-label font-weight-bold">
-            Adresse E-mail Associée <span class="required-star text-danger" aria-hidden="true">*</span>
+    <div class="form-group auth-form-group">
+        <label for="email" class="auth-label">
+            Adresse E-mail Associée <span class="required-star" aria-hidden="true">*</span>
         </label>
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text bg-white border-right-0">
-                    <i class="fa fa-envelope text-muted" aria-hidden="true"></i>
-                </span>
-            </div>
-            <input id="email" type="email" placeholder="nom@intergroupe-ci.com" class="form-control border-left-0 @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus aria-required="true">
+        <div class="auth-input-group">
+            <i class="fa fa-envelope auth-input-icon" aria-hidden="true"></i>
+            <input id="email" 
+                   type="email" 
+                   placeholder="Ex: nom@intergroupe-ci.com" 
+                   class="form-control auth-input @error('email') is-invalid @enderror" 
+                   name="email" 
+                   value="{{ old('email') }}" 
+                   required 
+                   autocomplete="email" 
+                   autofocus 
+                   aria-required="true">
         </div>
-        <small class="form-text text-muted mt-1">
+        <small class="form-text text-muted mt-2">
             Un courrier électronique contenant le lien de réinitialisation vous sera adressé si l'adresse est enregistrée.
         </small>
     </div>
 
-    <button type="submit" class="btn btn-primary btn-lg btn-block shadow-sm mt-4">
-        <i class="fa fa-paper-plane mr-2" aria-hidden="true"></i>
+    <button type="submit" class="btn btn-auth-submit mt-4">
+        <i class="fa fa-paper-plane" aria-hidden="true"></i>
         <span>Envoyer le lien de réinitialisation</span>
     </button>
 
     <div class="auth-footer-links">
-        <a href="{{ route('login') }}" class="text-primary font-weight-bold">
+        <a href="{{ route('login') }}" class="auth-back-link">
             <i class="fa fa-arrow-left mr-1" aria-hidden="true"></i> Retour à la connexion
         </a>
     </div>

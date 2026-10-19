@@ -27,55 +27,39 @@
 	<link rel="apple-touch-icon" sizes="76x76" href="{{asset('template/img/2.png')}}">
 	<link rel="icon" type="image/png" sizes="96x96" href="{{asset('template/img/2.png')}}">
 </head>
-<body>
+<body class="auth-page-body">
     <!-- Lien d'évitement accessible (WCAG 2.4.1) -->
-    <a href="#auth-box" class="skip-link">Aller au formulaire</a>
+    <a href="#auth-card" class="skip-link">Aller au formulaire</a>
 
-    <!-- WRAPPER -->
-	<div id="wrapper">
-		<div class="vertical-align-wrap">
-			<div class="vertical-align-middle">
-				<div class="auth-box" id="auth-box">
-					<div class="left">
-						<div class="content">
-							<div class="header text-center">
-								<a href="{{ route('accueil') }}" class="brand ig-brand mb-2" title="Retour au site public INTER-GROUPE">
-									<span>INTER-</span>GROUPE
-								</a>
-								<h1 class="lead">{{ $titre ?? 'Espace d\'Authentification' }}</h1>
-								@if(!empty($sousTitre))
-									<p class="auth-desc">{{ $sousTitre }}</p>
-								@endif
-							</div>
-                            @yield('content')
-						</div>
-					</div>
-					<div class="right" style="background-color: var(--ig-secondary, #1A3A6B);">
-						<div class="overlay" style="background: linear-gradient(135deg, rgba(10, 110, 63, 0.88) 0%, rgba(26, 58, 107, 0.94) 100%);"></div>
-						<div class="content text text-center p-4">
-							<div class="mb-3">
-								<span class="badge badge-light px-3 py-2 text-uppercase font-weight-bold" style="letter-spacing: 0.08em; font-size: 0.75rem; color: var(--ig-primary, #0A6E3F);">
-									Portail Sécurisé
-								</span>
-							</div>
-							<h2 class="heading" style="font-family: var(--ig-font-heading); font-weight: 700; font-size: 1.6rem; color: #FFFFFF; margin-bottom: 0.75rem;">
-								Espace Administrateur
-							</h2>
-							<p style="font-size: 0.95rem; opacity: 0.92; line-height: 1.6; max-width: 380px; margin: 0 auto; color: #FFFFFF;">
-								Cabinet d'Ingénierie Informatique &amp; Formation Continue agréé FDFP N° 0039 &bull; Treichville, Abidjan.
-							</p>
-							<div class="mt-4 pt-3 border-top" style="border-color: rgba(255, 255, 255, 0.2) !important;">
-								<a href="{{ route('accueil') }}" class="btn btn-sm btn-outline-light" style="border-radius: 9999px; padding: 0.35rem 1rem;">
-									<i class="fa fa-arrow-left mr-1" aria-hidden="true"></i> Retour au site public
-								</a>
-							</div>
-						</div>
-					</div>
-					<div class="clearfix"></div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- END WRAPPER -->
+    <!-- WRAPPER CENTRÉ MODERNE & PROFESSIONNEL -->
+    <div class="auth-page-wrapper">
+        <div class="auth-card" id="auth-card">
+            <!-- En-tête de la carte -->
+            <div class="auth-header">
+                <a href="{{ route('accueil') }}" class="auth-brand" title="Retour au site public INTER-GROUPE">
+                    <span class="auth-brand-green">INTER-</span><span class="auth-brand-navy">GROUPE</span>
+                </a>
+                <div>
+                    <span class="auth-badge">
+                        <i class="fa fa-shield" aria-hidden="true"></i> Portail Back-Office Sécurisé
+                    </span>
+                </div>
+                <h1 class="auth-title">{{ $titre ?? 'Espace d\'Authentification' }}</h1>
+                @if(!empty($sousTitre))
+                    <p class="auth-subtitle">{{ $sousTitre }}</p>
+                @endif
+            </div>
+
+            <!-- Corps du formulaire -->
+            <div class="auth-body">
+                @yield('content')
+            </div>
+
+            <!-- Pied institutionnel discret -->
+            <div class="auth-card-footer">
+                Cabinet d'Ingénierie &amp; Formation Continue &bull; Agréé FDFP N° 0039 &bull; Treichville, Abidjan
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -7,13 +7,13 @@
 	<div class="main-content">
 		<div class="container-fluid">
 			
-			<div class="page-title">
+			<div class="admin-page-header">
 				<div>
 					<h3 style="margin: 0; font-size: 1.625rem; font-weight: 700; color: var(--ig-secondary, #1A3A6B);">Domaines de Formations</h3>
 					<p style="margin: 4px 0 0; font-size: 0.875rem; color: var(--ig-text-muted, #64748B);">Gestion des filières et des modules de formation continue du cabinet</p>
 				</div>
 				<div>
-					<a href="{{route('newForm', 'mode=Ajouter')}}" class="btn btn-primary" style="border-radius: var(--ig-radius-md, 8px); font-weight: 600;">
+					<a href="{{route('newForm', 'mode=Ajouter')}}" class="btn btn-primary font-weight-bold" style="border-radius: var(--ig-radius-md, 8px); font-weight: 600; padding: 9px 18px; box-shadow: var(--ig-shadow-xs);">
 						<i class="fa fa-plus-circle"></i> Nouveau Domaine
 					</a>
 				</div>
@@ -141,4 +141,4 @@
 	<!-- END MAIN CONTENT -->
 </div>
 <!-- END MAIN -->
-@endsection
+@endsection

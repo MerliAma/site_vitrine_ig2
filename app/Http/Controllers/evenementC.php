@@ -43,23 +43,20 @@ class evenementC extends Controller
         ]);
 
         $nbSugNonLu=suggestion::where('boolSug','0')->count();
+        $mode = $request->input('mode', $_GET['mode'] ?? 'Ajouter');
+        $idEvent = $request->input('idEvent', $_GET['idEvent'] ?? null);
 
-        if($request->datefinEvent<date('Y-m-d'))
+        if($request->datefinEvent < $request->datedebEvent)
         {
-            $info1="La date de fin est une date antérieure!";
-            return view('administration/newEvenements', ['info1' => $info1, 'nbSugNonLu'=>$nbSugNonLu]); //, 'idEvent2'=>$_GET["idEvent"], 'mode'=>$_GET["mode"]
-        }
-        else if($request->datefinEvent<$request->datedebEvent)
-        {
-            $info2="Erreur au niveau des dates";
+            $info2="La date de fin ne peut pas être antérieure à la date de début !";
             return view('administration/newEvenements', ['info2' => $info2, 'nbSugNonLu'=>$nbSugNonLu]);
         }
         else
         {
             //modifier un evenement
-            if($_GET['mode']=="Modifier")
+            if($mode == "Modifier" && $idEvent)
             {
-                $updEv=evenement::find($_GET['idEvent']) -> update([
+                evenement::where('id', $idEvent)->update([
                     'themEvent'=>ucwords($request->themEvent),
                     'entEvent'=>strtoupper($request->entEvent), //mettre en majuscule
                     'datedebEvent'=>$request->datedebEvent,
@@ -67,9 +64,9 @@ class evenementC extends Controller
                 ]);
                 $action="modification";
             }
-            else if($_GET['mode']=="Ajouter") //ajouter un nouvel evenement
+            else //ajouter un nouvel evenement
             {
-                $newEv=evenement::create([
+                evenement::create([
                     'themEvent'=>ucwords($request->themEvent),
                     'entEvent'=>strtoupper($request->entEvent), //mettre en majuscule
                     'datedebEvent'=>$request->datedebEvent,
@@ -78,7 +75,7 @@ class evenementC extends Controller
                 ]);
                 $action="enregistrement";
             }
-            $info="Votre $action s'est effectué(e) avec succès!";
+            $info="Votre $action s'est effectuée avec succès !";
             $event=evenement::all();
             $nblistEvent = evenement::count();
             return redirect()->route('evenements', ['listeEvent' => $event, 'nblistEvent' => $nblistEvent, 'info' => $info, 'nbSugNonLu'=>$nbSugNonLu]);
@@ -86,21 +83,22 @@ class evenementC extends Controller
     }
 
     //Supprimer un évènement chez l'Admin
-    public function SupEvent()
+    public function SupEvent(Request $request)
     {
         if (auth()->guest()) 
         {
             return redirect('/login')->withErrors([
                 'logout' => "Vous devez être connecté pour voir cette page.",
             ]);
-           
         }
-        if($_GET['mode']=="Supprimer")
+        $mode = $request->input('mode', $_GET['mode'] ?? '');
+        $idEvent = $request->input('idEvent', $_GET['idEvent'] ?? '');
+        if($mode=="Supprimer" && $idEvent)
         {
-            $supEv=evenement::find($_GET['idEvent']) -> delete();
+            evenement::where('id', $idEvent)->delete();
         }
 
-        $info="Votre evènement a été supprimé";
+        $info="Votre événement a été supprimé.";
         $event = evenement::all();
         $nblistEvent = evenement::count();
         $nbSugNonLu=suggestion::where('boolSug','0')->count();
@@ -108,41 +106,33 @@ class evenementC extends Controller
     }
 
     //ligne ou retirer un évènement chez l'Admin
-    public function RetEvent()
+    public function RetEvent(Request $request)
     {
         if (auth()->guest()) 
         {
             return redirect('/login')->withErrors([
                 'logout' => "Vous devez être connecté pour voir cette page.",
             ]);
-           
         }
 
         $info="";
         $info2="";
-        if($_GET['mode']=="Retirer")
+        $mode = $request->input('mode', $_GET['mode'] ?? '');
+        $idEvent = $request->input('idEvent', $_GET['idEvent'] ?? '');
+
+        if($mode=="Retirer" && $idEvent)
         {
-            $retEv=evenement::find($_GET['idEvent']) -> update([
+            evenement::where('id', $idEvent)->update([
                 'boolEvent'=>"0",
             ]);
-            $info="Votre evènement a été retiré.";
+            $info="Votre événement a été retiré de l'affichage public.";
         }
-        else if($_GET['mode']=="Integrer")
+        else if($mode=="Integrer" && $idEvent)
         {
-            //vérifier si l'évènement est passé
-            $verifEv=evenement::where('id',$_GET['idEvent'])->get();
-           
-            if($verifEv[0]->datefinEvent>date('Y-m-d'))
-            {
-                $intEv=evenement::find($_GET['idEvent']) -> update([
-                    'boolEvent'=>"1",
-                ]);
-                $info="Votre evènement a été mis en ligne.";
-            }
-            else
-            {
-                $info2="Cet Evènement est passé! Impossible de le mettre en ligne.";
-            }
+            evenement::where('id', $idEvent)->update([
+                'boolEvent'=>"1",
+            ]);
+            $info="Votre événement a été mis en ligne sur la page d'accueil avec succès.";
         }
         $event = evenement::all();
         $nblistEvent = evenement::count();

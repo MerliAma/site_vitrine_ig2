@@ -67,9 +67,18 @@ class UserC extends Controller
             $user->save();
         }
 
-        if(User::count()==0 && $_GET['mode']=="new")
+        $mode = $request->input('mode', $_GET['mode'] ?? '');
+        $idUser = $request->input('idUser', $_GET['idUser'] ?? null);
+
+        // Nettoyage préalable du numéro de téléphone (uniquement les chiffres)
+        if ($request->has('telUser')) {
+            $telClean = preg_replace('/\D/', '', $request->telUser);
+            $request->merge(['telUser' => $telClean]);
+        }
+
+        if(User::count()==0 && $mode=="new")
         {
-            request()->validate([
+            $request->validate([
                 'name' => ['required'],
                 'telUser' => ['required', 'min:10','max:10'],
                 'email' => ['required', 'email','unique:users'],
@@ -91,15 +100,16 @@ class UserC extends Controller
             
             return redirect()->route('profil');           
         }
-        if($_GET['mode']=="Ajouter")
+
+        if($mode=="Ajouter")
         {
-            request()->validate([
+            $request->validate([
                 'name' => ['required'],
                 'telUser' => ['required', 'min:10','max:10'],
                 'email' => ['required', 'email','unique:users'],
                 'password' => ['required', 'confirmed', 'min:6'],
                 'password_confirmation' => ['required'],
-                'username'=>['required'],
+                'username'=>['required', 'unique:users'],
             ]);
 
             $password=Hash::make($request->password);
@@ -109,69 +119,69 @@ class UserC extends Controller
             $user->email=$request->email;
             $user->telUser=wordwrap($request->telUser,2,"-",true);
             $user->username=$request->username;
-            $user->role_id=$request->role_id;
+            $user->role_id=$request->role_id ?? role::where('libelle', 'Autre')->value('id');
             $user->password=$password;
-            //dd($user->email);
             $user->save();
             
-            $info="Votre Utilisateur a bien été enregistré!";
+            $info="Votre Utilisateur a bien été enregistré !";
             $listeUser=User::all();
             $nblisteUser=User::count();
             $nbSugNonLu=suggestion::where('boolSug','0')->count();
             
             return redirect()->route('user',['listeUser'=>$listeUser, 'nblisteUser'=>$nblisteUser, 'nbSugNonLu'=>$nbSugNonLu, 'info'=>$info]);
         }
-        else if($_GET['mode']=="Modifier")
+        else if($mode=="Modifier" && $idUser)
         {
-            //if()
-            if($request->password!="")
+            $user=User::find($idUser);
+            if (!$user) {
+                return redirect()->back()->withErrors(['idUser' => "Utilisateur introuvable."]);
+            }
+
+            if($request->filled('password'))
             {
-                request()->validate([
+                $request->validate([
                     'name' => ['required'],
                     'telUser' => ['required', 'min:10','max:10'],
-                    'email' => ['required', 'email'],
+                    'email' => ['required', 'email', 'unique:users,email,' . $user->id],
                     'password' => ['required', 'confirmed', 'min:6'],
                     'password_confirmation' => ['required'],
-                    'username'=>['required'],
+                    'username'=>['required', 'unique:users,username,' . $user->id],
                 ]);
 
                 $password=Hash::make($request->password);
-
-                $user=User::find($_GET['idUser']);
-                $user->name=strtoupper($request->name);
-                $user->email=$request->email;
-                $user->telUser=wordwrap($request->telUser,2,"-",true);
-                $user->username=$request->username;
                 $user->password=$password;
-                //dd($user->email);
-                $user->save();
             }
             else
             {
-                request()->validate([
+                $request->validate([
                     'name' => ['required'],
                     'telUser' => ['required', 'min:10', 'max:10'],
-                    'email' => ['required', 'email'],
-                    'username'=>['required'],
+                    'email' => ['required', 'email', 'unique:users,email,' . $user->id],
+                    'username'=>['required', 'unique:users,username,' . $user->id],
                 ]);
-
-                $user=User::find($_GET['idUser']);
-                $user->name=strtoupper($request->name);
-                $user->email=$request->email;
-                $user->telUser=wordwrap($request->telUser,2,"-",true);
-                $user->username=$request->username;
-                $user->save();
             }
+
+            $user->name=strtoupper($request->name);
+            $user->email=$request->email;
+            $user->telUser=wordwrap($request->telUser,2,"-",true);
+            $user->username=$request->username;
+            if ($request->has('role_id') && $request->role_id) {
+                $user->role_id = $request->role_id;
+            }
+            $user->save();
             
-            $info="Modification effectuée avec succès!";
-            return redirect()->route('profil',['info'=>$info]);
+            $info="Modification effectuée avec succès !";
+            // Si on modifie son propre compte, rediriger vers profil, sinon vers la liste des utilisateurs
+            if (Auth::check() && Auth::id() == $user->id) {
+                return redirect()->route('profil',['info'=>$info]);
+            } else {
+                return redirect()->route('user',['info'=>$info]);
+            }
         }
-        //return view('administration/user',['listeUser'=>$listeUser, 'nblisteUser'=>$nblisteUser, 'nbSugNonLu'=>$nbSugNonLu, 'info'=>$info]);
-        //}
     }
 
     //supprimer un user
-    public function SupUser()
+    public function SupUser(Request $request)
     {
         if (auth()->guest()) 
         {
@@ -180,19 +190,22 @@ class UserC extends Controller
             ]);
         }
 
-        if($_GET['mode']=="Supprimer")
+        $mode = $request->input('mode', $_GET['mode'] ?? '');
+        $idUser = $request->input('idUser', $_GET['idUser'] ?? '');
+
+        if($mode=="Supprimer" && $idUser)
         {
-            $supUser=User::find($_GET['idUser'])->delete();
+            User::where('id', $idUser)->delete();
         }
         $listeUser=User::all();
         $nblisteUser=User::count();
         $nbSugNonLu=suggestion::where('boolSug','0')->count();
-        $info="Suppression réussie!";
+        $info="Suppression réussie !";
         return redirect()->route('user',['listeUser'=>$listeUser, 'nblisteUser'=>$nblisteUser, 'nbSugNonLu'=>$nbSugNonLu, 'info'=>$info]);
     }
 
     //réinitialiser permission un user
-    public function RenPermUser()
+    public function RenPermUser(Request $request)
     {
         if (auth()->guest()) 
         {
@@ -201,45 +214,47 @@ class UserC extends Controller
             ]);
         }
 
-        /*if($_GET['mode']=="Ren")
-        {
-            $ReUser=User::find($_GET['idUser'])->update([
-                'password'=>Hash::make("000000"),
-            ]);
-        }*/
-        if($_GET['mode']=="Perm")
+        $mode = $request->input('mode', $_GET['mode'] ?? '');
+        $idUser = $request->input('idUser', $_GET['idUser'] ?? '');
+
+        if($mode=="Perm" && $idUser)
         {
             $listeUser=User::all();
             $nblisteUser=User::count();
             $nbSugNonLu=suggestion::where('boolSug','0')->count();
 
-            $PermUser=User::find($_GET['idUser']);
-            $idAdmin=role::where('libelle','Admin')->get();
-            $idAdmin=$idAdmin[0]->id;
-            if($PermUser->role_id==$idAdmin) 
-            {
-                if(User::where('role_id',$idAdmin)->count()>1)
+            $PermUser=User::find($idUser);
+            if ($PermUser) {
+                $idAdmin=role::where('libelle','Admin')->first();
+                $idAdmin=$idAdmin ? $idAdmin->id : 1;
+                if($PermUser->role_id==$idAdmin) 
                 {
-                    $idAutre=role::where('libelle','Autre')->get();
-                    $idAutre=$idAutre[0]->id;
-                    $PermUser=User::find($_GET['idUser'])->update([
-                        'role_id'=>  $idAutre,
-                    ]);
+                    if(User::where('role_id',$idAdmin)->count()>1)
+                    {
+                        $idAutre=role::where('libelle','Autre')->first();
+                        $idAutre=$idAutre ? $idAutre->id : 2;
+                        $PermUser->update([
+                            'role_id'=>  $idAutre,
+                        ]);
+                    }
+                    else
+                    {
+                        return redirect()->route('user',['listeUser'=>$listeUser, 'nblisteUser'=>$nblisteUser, 'nbSugNonLu'=>$nbSugNonLu, 'info2'=>'Impossible de Réduire les privilèges de l\' Administrateur unique']);   
+                    }
                 }
                 else
                 {
-                    return redirect()->route('user',['listeUser'=>$listeUser, 'nblisteUser'=>$nblisteUser, 'nbSugNonLu'=>$nbSugNonLu, 'info2'=>'Impossible de Réduire les privilèges de l\' Administrateur unique']);   
+                    $PermUser->update([
+                        'role_id'=>  $idAdmin,
+                    ]);
                 }
-            }
-            else
-            {
-                $PermUser=User::find($_GET['idUser'])->update([
-                    'role_id'=>  $idAdmin,
-                  ]);
             }
         }
         
-        $info="Modification réussie!";
+        $info="Modification réussie !";
+        $listeUser=User::all();
+        $nblisteUser=User::count();
+        $nbSugNonLu=suggestion::where('boolSug','0')->count();
         return redirect()->route('user',['listeUser'=>$listeUser, 'nblisteUser'=>$nblisteUser, 'nbSugNonLu'=>$nbSugNonLu, 'info'=>$info]);
     }
     

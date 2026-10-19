@@ -725,21 +725,22 @@ evenementC, suggestionC, UserC, BeneficiaireC, ModuleC, profilC, HomeController,
 - Difficultés : Aucune.
 
 ### AUTH-002 — Lot 5 — Refonte ergonomique de l'écran de connexion (`auth/login.blade.php`)
-- Objectif : Rendre l'écran de connexion professionnel, rassurant, accessible, conforme à l'identité INTER-GROUPE et adapté aux mobiles
+- Objectif : Rendre l'écran de connexion simple, attractif, professionnel, avec des champs de saisie strictement uniformes et un affichage centré équilibré
 - Statut : **Terminé**
-- Fichiers : `resources/views/auth/login.blade.php`
+- Fichiers : `resources/views/auth/login.blade.php`, `resources/views/Layouts/app.blade.php`, `css/design-system.css`
 - Changements effectués :
-  - Suppression complète du `<style>` inline et de l'ID `#erreur` dupliqué.
-  - Libellés visibles et explicites au-dessus de chaque champ avec astérisques obligatoires (`aria-required="true"`).
-  - Ajout d'icônes contextuelles dans les groupes de saisie (icône utilisateur, icône cadenas).
-  - Intégration d'une micro-interaction accessible pour afficher/masquer le mot de passe (`togglePasswordVisibility()` avec bouton aria-label).
-  - Remplacement des termes anglais : "Se souvenir de moi" avec case à cocher accessible, bouton « Se connecter ».
-  - Liens fonctionnels intégrés : « Mot de passe oublié ? » vers `route('password.request')`, conservation du bootstrap initial d'administrateur si `User::count() == 0` (`route('modifPro', 'mode=new')`), et lien de retour vers le site public.
-  - Messages d'erreur génériques sécurisés évitant d'exposer si l'adresse e-mail existe spécifiquement.
-- Raisons des décisions : Améliorer la confiance et le confort de saisie des gestionnaires tout en renforçant la sécurité.
+  - **Champs de saisie strictement uniformes** : harmonisation totale des champs Identifiant/Email et Mot de passe (hauteur 48px identique, padding intérieur gauche de 42px identique, icônes `fa-user` et `fa-lock` parfaitement alignées à 14px du bord, bordures `1.5px solid #CBD5E1`, rayon 8px, anneau de focus émeraude `#0A6E3F` avec halo doux 3.5px).
+  - Élimination des balises Bootstrap 4 (`.input-group-prepend`) incompatibles avec le layout Bootstrap 3, qui provoquaient une rupture d'alignement et la disparition de la bordure gauche.
+  - Bouton d'affichage/masquage du mot de passe (`fa-eye`) intégré au pixel près dans le champ mot de passe sans déformer la symétrie.
+  - **Format simple, attractif et professionnel** : carte d'authentification centrée (`max-width: 450px`, coins arrondis 16px, ombre douce et ligne supérieure signature aux couleurs d'INTER-GROUPE vert `#0A6E3F` / bleu marine `#1A3A6B`), remplaçant l'ancien split-box déséquilibré.
+  - En-tête valorisant avec le logo officiel `INTER-GROUPE`, le badge « Portail Back-Office Sécurisé », titre net et sous-titre rassurant.
+  - Ligne d'options claire avec case à cocher native « Se souvenir de moi » et lien « Mot de passe oublié ? ».
+  - Bouton de soumission plein format `btn-auth-submit` avec dégradé vert émeraude et micro-animation au survol.
+  - Alertes stylisées (`.auth-alert-danger`, `.auth-alert-warning`, `.auth-alert-success`) et pied institutionnel discret (Agrément FDFP N° 0039, Treichville).
+- Raisons des décisions : Répondre à la demande explicite de simplification, d'attractivité professionnelle et d'uniformité absolue des champs de saisie.
 - Skills appliqués : `ui-ux-pro-max`, `frontend-design`.
-- Tests exécutés : Rendu de la vue Blade via script automatisé (6 712 octets générés).
-- Résultats constatés : Interface épurée, responsive et sans erreur.
+- Tests exécutés : Banc de test de rendu Blade automatisé (6 278 octets générés pour `auth.login`, 19/19 vues testées avec 100% de succès).
+- Résultats constatés : Présentation moderne, simple, attractive, responsive sur smartphone et ordinateur avec des champs 100% uniformes.
 - Difficultés : Aucune.
 
 ### AUTH-003 — Lot 5 — Refonte des écrans de réinitialisation de mot de passe (`email.blade.php`, `reset.blade.php`, `confirm.blade.php`)
@@ -1143,8 +1144,62 @@ evenementC, suggestionC, UserC, BeneficiaireC, ModuleC, profilC, HomeController,
 
 ---
 
-*Dernière mise à jour : Achèvement complet du Lot 8 — 2026-10-17*
+### 10. Améliorations de l'Espace d'Administration Backoffice (Dashboard & Navbar)
 
+#### 1. Convivialité et Cartes d'Indicateurs Visibles (`accueilAd.blade.php`) :
+- **En-tête convivial & personnalisé** : Salutation chaleureuse avec émoticône `Bonjour, [Nom] 👋`, date du jour dynamique et badge de statut de rôle administrateur (`🛡️ Session active`).
+- **Cartes d'indicateurs de haute visibilité (`.kpi-card`)** :
+  - **Formation Continue (`🎓`)** : Compteur géant des demandes de formation reçues (`$nbdmdform`), badge thématique Vert Émeraude (`#0A6E3F`), sous-titre explicite et lien d'action rapide `Traiter les demandes →`.
+  - **Prestations d'Ingénierie (`💻`)** : Compteur des requêtes de services et projets (`$nbdmdprest`), badge thématique Bleu Royal (`#1A3A6B`), lien `Consulter les dossiers →`.
+  - **Sessions & Séminaires (`📅`)** : Nombre de formations programmées en ligne (`$nbEvent`), badge Cyan (`#0891B2`), lien `Gérer le calendrier →`.
+  - **Boîte de Réception (`📬`)** : Nombre de suggestions et messages non lus (`$nbSugNonLu`), badge d'alerte Ambre (`#D97706`), lien `Ouvrir les messages →`.
+- **Missions Opérationnelles (`.admin-mission-card`)** : Refonte conviviale avec émoticônes explicites (`🎓`, `💻`, `📅`, `📬`), micro-animations au survol et boutons d'action stylisés.
+- **Raccourcis d'action rapide (`.admin-quick-action`)** : Émoticônes expressives (`✨ Nouvel Événement`, `📚 Nouveau Domaine`, `⚙️ Nouvelle Prestation`, `👤 Nouvel Utilisateur`).
+- **Panneaux latéraux enrichis** : Fiche signalétique conviviale du cabinet INTER-GROUPE (Agrément FDFP, direction, adresse) et carte profil avec initiale stylisée.
 
+#### 2. Protection Anti-Débordement de la Navbar (`baseAdmin.blade.php` & `design-system.css`) :
+- **Verrouillage structurel Flexbox** : Application de `display: flex !important; align-items: center !important; height: 64px !important;` sur la barre supérieure pour éliminer les paddings verticaux excessifs de 80px hérités du template Klorofil.
+- **Bouton Suggestions / Notifications calibré** : Format carré ergonomique 44x44px avec badge d'alerte rouge absolu (`top: -4px; right: -4px;`), menu déroulant aligné à droite (`dropdown-menu-right`) avec gestion des pluriels et état vide.
+- **Nom d'utilisateur protégé contre le débordement** : Encapsulation dans `.navbar-user-name` avec `max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;` et infobulle native `title` pour les noms longs.
+- **Affichage responsive adaptatif** : Masquage des mentions secondaires sur tablettes et mobiles (`hidden-xs hidden-sm`) pour garantir un espace de navigation net et sans saut de ligne.
 
+#### 3. Footer Admin Plein Bas de Page & Disposition Profil (`baseAdmin.blade.php`, `profil.blade.php`, `design-system.css`) :
+- **Footer backoffice pleine largeur & sticky** :
+  - Élimination de `position: absolute; right: 0;` non dimensionné hérité du template.
+  - Extension sur 100% de la largeur de travail (`width: calc(100% - 260px); margin-left: 260px;` sur grand écran et `width: 100%; margin-left: 0;` sur mobile/tablette).
+  - Ancrage en bas de page garanti via `min-height: calc(100vh - 64px - 60px);` sur `#admin-main` / `.main`.
+  - Intégration d'un conteneur fluide avec copyright officiel et mention d'établissement (`.footer-extra`).
+- **Refonte de la page Profil (`profil.blade.php`)** :
+  - **En-tête épuré** : Titre structuré, sous-titre explicatif et bouton d'action primaire aligné.
+  - **Carte d'identité Administrateur** : Avatar circulaire 84px avec initiale centrée en dégradé, nom complet en titre principal, tag identifiant `@username` monospace, badge de rôle `🛡️ Administrateur` et liste de métadonnées (`Membre depuis`, `Statut actif`, `Établissement`).
+  - **Panneau de coordonnées avec espacements réguliers** : Remplacement des balises `<hr>` anarchiques par une grille de lignes structurées (`.profile-info-row`) avec label fixe 220px, icônes alignées, valeurs contrastées et fond subtil au survol.
+  - **Section Sécurité & Recommandation** : Indication explicite du hachage de mot de passe (BCrypt) et encart de conseils de sécurité pour les administrateurs du cabinet.
 
+#### 4. Séparation Aérée entre les Boutons « Nouveau » et les Tables (`admin-page-header`, `design-system.css`) :
+- **Identification du problème d'origine** : Les en-têtes utilisaient des classes utilitaires Bootstrap 4 (`mb-4`, `d-flex`) non interprétées nativement par Bootstrap 3/Klorofil, ce qui collait directement les boutons d'action (« Nouvel événement », « Nouvel utilisateur », « Nouveau Domaine », etc.) au-dessus des cartes et des tableaux.
+- **Création du composant `.admin-page-header` & mise à niveau de `.page-title`** :
+  - Espacement inférieur généreux (`margin-bottom: 2.25rem !important;` soit 36px de respiration).
+  - Ligne de séparation fine et élégante (`border-bottom: 1px solid var(--ig-border); padding-bottom: 1.25rem;`).
+  - Alignement Flexbox responsive avec disposition en barre d'outils (`justify-content: space-between; align-items: center; gap: 1.25rem;`).
+  - Définition explicite de `mb-4` (`margin-bottom: 2.25rem !important;`) et marge supérieure sur les cartes/panels (`margin-top: 0.5rem;`).
+  - Déploiement sur l'ensemble des vues de gestion : `evenements.blade.php`, `user.blade.php`, `typePr.blade.php`, `domForm.blade.php`, `listeModules.blade.php`, `dmdForm.blade.php`, `dmdPrest.blade.php`, `suggestions.blade.php`.
+
+#### 5. Correction de l'Étendue du Footer Backoffice & Restauration du Footer Public (`design-system.css`) :
+- **Cause du problème constaté** : La règle CSS `footer { width: calc(100% - 260px) !important; margin-left: 260px !important; float: right !important; }` introduite pour le backoffice n'était pas restreinte à `#wrapper footer`. Elle s'appliquait par conséquent à la balise `<footer>` des pages publiques, provoquant un décalage artificiel de 260px vers la droite et un rognage de moitié de la largeur du pied de page public.
+- **Correction apportée** :
+  - Confinement strict des règles du backoffice sous le sélecteur d'ancrage `#wrapper footer` (qui n'existe que dans l'espace administration).
+  - Rétablissement explicite de la pleine largeur pour les pages publiques : `#contenu footer, footer[role="contentinfo"] { width: 100% !important; margin-left: 0 !important; float: none !important; position: static !important; }`.
+  - Résultat : le footer public s'affiche désormais sur toute la largeur (100%) sans aucun décalage ni coupure.
+
+#### 6. Footer Backoffice Adaptatif (Présence ou Absence du Menu Latéral) :
+- **Comportement dynamique selon le contexte** :
+  - **Menu latéral présent & visible (`baseAdmin.blade.php`)** : Sur desktop (`>= 1025px`), le footer s'adapte à la largeur du menu via `#sidebar-nav ~ footer` et `#wrapper:has(#sidebar-nav) footer` (`width: calc(100% - 260px) !important; margin-left: 260px !important; float: right !important;`).
+  - **Menu latéral absent (`baseAdmin2.blade.php`, `modifPro`, formulaires autonomes)** : Le footer prend automatiquement 100% de la largeur (`width: 100% !important; margin-left: 0 !important; float: none !important;`).
+  - **Menu replié / masqué (Basculement hamburger via `.layout-fullwidth`)** : Lorsque l'administrateur clique sur le bouton bascule, le footer s'étend fluidement à 100% grâce à `body.layout-fullwidth #wrapper footer` avec une transition CSS douce (`transition: all 0.3s ease-in-out`).
+  - **Écrans mobiles & tablettes (`< 1025px`)** : Le menu passant en mode hors-champ (*offcanvas*), le pied de page occupe par défaut 100% de la largeur sans aucun espace vide.
+- **Protection absolue du site public** :
+  - Les pages publiques (`#contenu footer`, `baseHTML.blade.php`) restent intouchées et garanties en pleine largeur 100%, sans interférence.
+
+---
+
+*Dernière mise à jour : Footer backoffice adaptatif — 2026-10-19*

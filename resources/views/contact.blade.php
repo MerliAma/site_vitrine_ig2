@@ -147,9 +147,10 @@
                         <div class="form-row">
                             <div class="form-group col-md-6 mb-3">
                                 <label for="inputMailSug" class="small font-weight-bold text-secondary">
-                                    Adresse Email
+                                    Adresse Email<span class="required-star text-danger" aria-hidden="true">*</span>
+                                <span class="sr-only">(obligatoire)</span>
                                 </label>
-                                <input type="email" class="form-control @error('mailSug') is-invalid @enderror" id="inputMailSug" placeholder="nom@entreprise.ci" name="mailSug" value="{{old('mailSug')}}">
+                                <input type="email" class="form-control @error('mailSug') is-invalid @enderror" id="inputMailSug" placeholder="nom@entreprise.ci" required="required" name="mailSug" value="{{old('mailSug')}}">
                                 @error('mailSug')
                                     <span class="invalid-feedback" role="alert">
                                         <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i> {{ $message }}
@@ -158,9 +159,10 @@
                             </div>
                             <div class="form-group col-md-6 mb-3">
                                 <label for="inputTelSug" class="small font-weight-bold text-secondary">
-                                    Numéro de Téléphone
+                                    Numéro de Téléphone<span class="required-star text-danger" aria-hidden="true">*</span>
+                                <span class="sr-only">(obligatoire)</span>
                                 </label>
-                                <input type="tel" class="form-control @error('telSug') is-invalid @enderror" id="inputTelSug" placeholder="0701020304" name="telSug" value="{{old('telSug')}}" aria-describedby="telSugHelp" pattern="[0-9]{10}">
+                                <input type="tel" class="form-control @error('telSug') is-invalid @enderror" id="inputTelSug" placeholder="0701020304" name="telSug" required="required" value="{{old('telSug')}}" aria-describedby="telSugHelp" pattern="[0-9]{10}">
                                 <small id="telSugHelp" class="form-text text-muted">Format standard à 10 chiffres (ex: 0701020304)</small>
                                 @error('telSug')
                                     <span class="invalid-feedback" role="alert">

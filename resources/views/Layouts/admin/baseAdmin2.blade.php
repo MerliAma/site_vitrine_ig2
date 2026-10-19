@@ -24,12 +24,12 @@
 	<link rel="stylesheet" href="{{asset('css/design-system.css')}}">
 </head>
 
-<body>
+<body class="layout-fullwidth no-sidebar">
 	<!-- Lien d'évitement accessible (WCAG 2.4.1) -->
 	<a href="#admin-main" class="skip-link">Aller au contenu principal</a>
 
 	<!-- WRAPPER -->
-	<div id="wrapper">
+	<div id="wrapper" class="no-sidebar">
 		<!-- NAVBAR -->
 		<nav class="navbar navbar-default navbar-fixed-top">  
 			<div class="brand">
@@ -48,14 +48,18 @@
 		<!-- END NAVBAR -->
         
         <!--MAIN-->
-        <main id="admin-main">
+        <main id="admin-main" style="padding-top: 80px; min-height: calc(100vh - 120px);">
             @yield('contenu')
         </main>
         <!--END MAIN-->
 		<div class="clearfix"></div>
 		<footer>
-			<div class="container-fluid text-center">
-				<p class="copyright mb-0" style="font-size: 0.875rem; color: var(--ig-text-muted, #64748B);">&copy; {{ date('Y') }} <strong>INTER-GROUPE</strong> — Espace Administration. Tous droits réservés.</p>
+			<div class="container-fluid">
+				<p class="copyright mb-0">&copy; {{ date('Y') }} <strong>INTER-GROUPE</strong> — Espace Administration. Tous droits réservés.</p>
+				<div class="footer-extra">
+					<i class="fa fa-graduation-cap text-success"></i>
+					<span>Cabinet d'Ingénierie & Formation Professionnelle &bull; Treichville, Abidjan</span>
+				</div>
 			</div>
 		</footer>
 	</div>

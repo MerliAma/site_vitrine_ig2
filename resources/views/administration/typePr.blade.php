@@ -5,13 +5,13 @@
     <div class="main-content">
         <div class="container-fluid">
             <!-- Header de page -->
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+            <div class="admin-page-header">
                 <div>
                     <h2 class="h3 font-weight-bold text-dark mb-1">Types de Prestations Informatiques</h2>
                     <p class="text-muted mb-0">Gestion du catalogue de services et d'ingénierie proposé par INTER-GROUPE</p>
                 </div>
-                <div class="mt-3 mt-md-0">
-                    <a href="{{ route('newPr', 'mode=Ajouter') }}" class="btn btn-primary shadow-sm font-weight-bold">
+                <div>
+                    <a href="{{ route('newPr', 'mode=Ajouter') }}" class="btn btn-primary font-weight-bold" style="border-radius: var(--ig-radius-md, 8px); padding: 9px 18px; box-shadow: var(--ig-shadow-xs);">
                         <i class="lnr lnr-plus-circle mr-1"></i> Nouveau type de prestation
                     </a>
                 </div>

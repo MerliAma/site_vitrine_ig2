@@ -35,7 +35,8 @@
 	<a href="#admin-main" class="skip-link">Aller au contenu principal</a>
 
 	<!-- WRAPPER -->
-	<div id="wrapper">		<!-- NAVBAR -->
+	<div id="wrapper">
+		<!-- NAVBAR -->
 		<nav class="navbar navbar-default navbar-fixed-top">  
 			<div class="brand">
 				<a href="{{route('accueilAd')}}" class="ig-brand" title="INTER-GROUPE Administration">
@@ -43,48 +44,65 @@
 				</a>
 			</div>
 			<div class="container-fluid barre">
-				<div class="navbar-btn">
-					<button type="button" class="btn-toggle-fullwidth" aria-label="Basculer le menu latéral"><i class="lnr lnr-arrow-left-circle"></i></button>
-				</div>
-				<div class="navbar-left hidden-xs" style="padding: 18px 10px;">
-					<span style="font-size: 0.875rem; color: var(--ig-text-muted, #64748B); font-weight: 500;">
-						<i class="fa fa-shield text-success"></i> Espace d'administration sécurisé
-					</span>
-				</div>
-				<div class="navbar-btn navbar-btn-right hidden-xs">
-					<a href="{{ route('accueil') }}" target="_blank" class="btn btn-sm btn-default" style="margin-top: 2px; margin-right: 15px; border-radius: var(--ig-radius-md, 8px);" title="Ouvrir le site public dans un nouvel onglet">
-						<i class="fa fa-external-link"></i> <span class="hidden-sm">Site public</span>
-					</a>
+				<div style="display: flex; align-items: center; gap: 12px;">
+					<div class="navbar-btn">
+						<button type="button" class="btn-toggle-fullwidth" aria-label="Basculer le menu latéral"><i class="lnr lnr-arrow-left-circle"></i></button>
+					</div>
+					<div class="hidden-xs hidden-sm">
+						<span class="navbar-left-pill">
+							<i class="fa fa-shield text-success"></i> Espace sécurisé
+						</span>
+					</div>
 				</div>
 				<div id="navbar-menu">
 					<ul class="nav navbar-nav navbar-right">
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle icon-menu" data-toggle="dropdown" aria-label="Notifications suggestions">
-								<i class="lnr lnr-alarm"></i>
-								<span class="badge bg-danger">{{ $nbSugNonLu ?? 0 }}</span>
+						<li class="hidden-xs">
+							<a href="{{ route('accueil') }}" target="_blank" title="Ouvrir le site public" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.8125rem; font-weight: 600; color: var(--ig-text-muted);">
+								<i class="fa fa-external-link text-primary"></i> <span class="hidden-sm">Site public</span>
 							</a>
-							<ul class="dropdown-menu notifications">
+						</li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle icon-menu" data-toggle="dropdown" aria-label="Notifications suggestions" title="Suggestions et messages reçus">
+								<i class="lnr lnr-alarm"></i>
+								@if(($nbSugNonLu ?? 0) > 0)
+									<span class="badge bg-danger">{{ $nbSugNonLu }}</span>
+								@endif
+							</a>
+							<ul class="dropdown-menu dropdown-menu-right notifications">
 								<li style="padding: 12px 16px; border-bottom: 1px solid var(--ig-border, #E2E8F0); font-weight: 600; color: var(--ig-secondary, #1A3A6B);">
-									<span>Suggestions & Messages</span>
+									<i class="lnr lnr-envelope"></i> <span>Suggestions & Messages</span>
 								</li>
-								<li>
-									<a href="{{route('suggestions')}}" class="more" style="color: var(--ig-primary, #0A6E3F);">
-										<i class="lnr lnr-envelope"></i> Voir toutes les suggestions ({{ $nbSugNonLu ?? 0 }} non lue{{ ($nbSugNonLu ?? 0) > 1 ? 's' : '' }})
+								<li style="padding: 10px 16px;">
+									<span style="font-size: 0.8125rem; color: var(--ig-text-muted);">
+										@if(($nbSugNonLu ?? 0) > 0)
+											<strong>{{ $nbSugNonLu }}</strong> message{{ $nbSugNonLu > 1 ? 's' : '' }} non lu{{ $nbSugNonLu > 1 ? 's' : '' }}
+										@else
+											Aucun message en attente
+										@endif
+									</span>
+								</li>
+								<li style="border-top: 1px solid var(--ig-border, #E2E8F0);">
+									<a href="{{route('suggestions')}}" class="more" style="color: var(--ig-primary, #0A6E3F); font-weight: 600; padding: 10px 16px;">
+										<i class="fa fa-arrow-circle-right"></i> Voir la boîte de réception
 									</a>
 								</li>
 							</ul>
 						</li>
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<img src="{{asset('template/img/2.png')}}" class="img-circle" alt="Avatar Administrateur" style="width: 26px; height: 26px; object-fit: contain; border: 1px solid var(--ig-border, #E2E8F0); padding: 1px; background: #fff;"> 
-								<span style="font-weight: 600;">{{ Auth::user()->name ?? Auth::user()->username ?? 'Utilisateur' }}</span> 
+							<a href="#" class="dropdown-toggle navbar-user-btn" data-toggle="dropdown" title="{{ Auth::user()->name ?? Auth::user()->username ?? 'Utilisateur' }}">
+								<img src="{{asset('template/img/2.png')}}" class="navbar-user-avatar" alt="Avatar"> 
+								<span class="navbar-user-name">{{ Auth::user()->name ?? Auth::user()->username ?? 'Utilisateur' }}</span> 
 								<i class="icon-submenu lnr lnr-chevron-down"></i>
 							</a>
-							<ul class="dropdown-menu">
+							<ul class="dropdown-menu dropdown-menu-right">
+								<li style="padding: 10px 16px; border-bottom: 1px solid var(--ig-border, #E2E8F0);">
+									<span style="display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ig-text-muted); font-weight: 700;">Connecté en tant que</span>
+									<strong style="font-size: 0.875rem; color: var(--ig-secondary);">{{ Auth::user()->name ?? Auth::user()->username ?? 'Utilisateur' }}</strong>
+								</li>
 								<li><a href="{{route('profil')}}"><i class="lnr lnr-user"></i> <span>Mon Compte</span></a></li>
 								<li>
 									<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-										<i class="lnr lnr-exit"></i> <span>{{ __('Déconnexion') }}</span>
+										<i class="lnr lnr-exit text-danger"></i> <span class="text-danger">{{ __('Déconnexion') }}</span>
 									</a>
 									<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
 										@csrf
@@ -115,13 +133,13 @@
 						@endphp
 						<ul class="nav">
 							<li>
-								<a href="{{ route('accueilAd') }}" class="{{ $currentRoute == 'accueilAd' ? 'active' : '' }}">
+								<a href="{{ route('accueilAd') }}" class="{{ $currentRoute == 'accueilAd' ? 'active' : '' }} align-items-center">
 									<i class="lnr lnr-home"></i> <span>Dashboard</span>
 								</a>
 							</li>
 							<li>
 								<a href="#subPages" data-toggle="collapse" class="{{ $isDemandes ? 'active' : 'collapsed' }}">
-									<i class="lnr lnr-file-empty"></i> <span>Demandes</span> <i class="icon-submenu lnr lnr-chevron-left"></i>
+									<i class="lnr lnr-file-empty"></i> <div class="d-flex align-items-center justify-content-between"><span>Demandes</span> <i class="icon-submenu lnr lnr-chevron-left"></i></div>
 								</a>
 								<div id="subPages" class="collapse {{ $isDemandes ? 'in' : '' }}">
 									<ul class="nav">
@@ -179,8 +197,12 @@
         <!--END MAIN-->
 		<div class="clearfix"></div>
 		<footer>
-			<div class="container-fluid text-center">
-				<p class="copyright mb-0" style="font-size: 0.875rem; color: var(--ig-text-muted, #64748B);">&copy; {{ date('Y') }} <strong>INTER-GROUPE</strong> — Espace Administration. Tous droits réservés.</p>
+			<div class="container-fluid">
+				<p class="copyright mb-0">&copy; {{ date('Y') }} <strong>INTER-GROUPE</strong> — Espace Administration. Tous droits réservés.</p>
+				<div class="footer-extra">
+					<i class="fa fa-graduation-cap text-success"></i>
+					<span>Cabinet d'Ingénierie & Formation Professionnelle &bull; Treichville, Abidjan</span>
+				</div>
 			</div>
 		</footer>
 	</div>

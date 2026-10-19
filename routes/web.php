@@ -61,7 +61,7 @@ Route::get('/accueilAd', 'accueilC@nombre' )->name('accueilAd');
 
 Route::get('/suggestions', 'suggestionC@AfficheSug' )->name('suggestions');
 Route::delete('/SupSug', 'suggestionC@SupSug' )->name('SupSug'); //get devient delete
-Route::get('/MarqSug', 'suggestionC@MarqSug' )->name('MarqSug'); //get devient delete
+Route::match(['get', 'post'], '/MarqSug', 'suggestionC@MarqSug' )->name('MarqSug');
 
 Route::get('/profil', 'profilC@profilSug' )->name('profil');
 Route::get('/modifPro', function () {
@@ -73,17 +73,17 @@ Route::get('/modifPro', function () {
 })->name('user');*/
 Route::get('/user', 'UserC@AfficheUser' )->name('user');
 Route::delete('/SupUser', 'UserC@SupUser' )->name('SupUser');
-Route::get('/RenPermUser', 'UserC@RenPermUser' )->name('RenPermUser');
+Route::match(['get', 'post'], '/RenPermUser', 'UserC@RenPermUser' )->name('RenPermUser');
 
 
 Route::get('/typePr', 'TypePrestationC@AfficheTypePrest' )->name('typePr');
 Route::delete('/SupTypeP','TypePrestationC@SupTypeP')->name('SupTypeP');
-Route::get('/RetP','TypePrestationC@RetTypeP')->name('RetP');
+Route::match(['get', 'post'], '/RetP','TypePrestationC@RetTypeP')->name('RetP');
 
 
 Route::get('/domForm', 'DomaineFormationC@AfficheDomForm' )->name('domForm');
 Route::delete('/SupDomF','DomaineFormationC@SupDomF')->name('SupDomF');
-Route::get('/RetF','DomaineFormationC@RetDomF')->name('RetF');
+Route::match(['get', 'post'], '/RetF','DomaineFormationC@RetDomF')->name('RetF');
 
 Route::get('/listeModules', 'ModuleC@listeModules' )->name('listeModules');
 Route::get('/newModule', function () {
@@ -102,18 +102,18 @@ Route::delete('/supModule', 'ModuleC@supModule' )->name('supModule');
 
 Route::get('/dmdPrest', 'dmdPrestationC@AffichedmdP' )->name('dmdPrest');
 Route::delete('/SupP', 'dmdPrestationC@SupP' )->name('SupP');
-Route::get('/MarqP', 'dmdPrestationC@MarqP' )->name('MarqP');
+Route::match(['get', 'post'], '/MarqP', 'dmdPrestationC@MarqP' )->name('MarqP');
 
 
 Route::get('/dmdForm', 'dmdFormationC@AffichedmdF' )->name('dmdForm');
 Route::delete('/SupF', 'dmdFormationC@SupF' )->name('SupF');
-Route::get('/MarqF', 'dmdFormationC@MarqF' )->name('MarqF');
+Route::match(['get', 'post'], '/MarqF', 'dmdFormationC@MarqF' )->name('MarqF');
 Route::get('/listeBenef', 'BeneficiaireC@listeBenef' )->name('listeBenef');
 
 
 Route::get('/evenements', 'evenementC@AfficheEvent' )->name('evenements');
 Route::delete('/Sup','evenementC@SupEvent')->name('Sup');
-Route::get('/Ret','evenementC@RetEvent')->name('Ret');
+Route::match(['get', 'post'], '/Ret','evenementC@RetEvent')->name('Ret');
 
 Route::get('/essai', function () {
     return view('essai');  
@@ -186,5 +186,5 @@ Route::group(['middleware'=>['auth']],function(){
 //Route::get('/home', 'HomeController@index')->name('home');
 
 Route::post('/verifLog', 'UserC@verifLog')->name('verifLog');
-Route::get('/SupRenPerm', 'UserC@SupRenPerm')->name('SupRenPerm');
+Route::match(['get', 'post'], '/SupRenPerm', 'UserC@SupRenPerm')->name('SupRenPerm');
 

@@ -9,13 +9,13 @@
     <div class="main-content">
         <div class="container-fluid">
             <!-- Header de page -->
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+            <div class="admin-page-header">
                 <div>
                     <h2 class="h3 font-weight-bold text-dark mb-1">Comptes Utilisateurs & Privilèges</h2>
                     <p class="text-muted mb-0">Administration des accès au backoffice d'INTER-GROUPE</p>
                 </div>
-                <div class="mt-3 mt-md-0">
-                    <a href="{{ route('newUser', 'mode=Ajouter') }}" class="btn btn-primary shadow-sm font-weight-bold">
+                <div>
+                    <a href="{{ route('newUser', ['mode' => 'Ajouter']) }}" class="btn btn-primary font-weight-bold" style="border-radius: var(--ig-radius-md, 8px); padding: 9px 18px; box-shadow: var(--ig-shadow-xs);">
                         <i class="lnr lnr-user mr-1"></i> Nouvel utilisateur
                     </a>
                 </div>
@@ -61,7 +61,8 @@
                                         <th class="border-0 py-3">Téléphone</th>
                                         <th class="border-0 py-3">Email & Identifiant</th>
                                         <th class="border-0 py-3 text-center" style="width: 170px;">Rôle & Privilèges</th>
-                                        <th class="border-0 py-3 text-right pr-4" style="width: 130px;">Action</th>
+                                        <!--<th class="border-0 py-3 text-center" style="width: 120px;">Modification</th>-->
+                                        <th class="border-0 py-3 text-right pr-4" style="width: 120px;">Suppression</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -74,7 +75,8 @@
                                             <td class="px-4 py-3 text-muted font-weight-bold">{{ $i + 1 }}</td>
                                             <td class="py-3">
                                                 <div class="font-weight-bold text-dark d-flex align-items-center">
-                                                    <div class="avatar-circle mr-2 d-inline-flex align-items-center justify-content-center bg-primary text-white font-weight-bold" style="width: 32px; height: 32px; border-radius: 50%; font-size: 0.8rem;">
+                                                    <div class="avatar-circle mr-2 d-inline-block text-center bg-primary text-white font-weight-bold" 
+                                                        style="width: 32px; height: 32px; border-radius: 50%; font-size: 0.8rem; line-height: 32px;">
                                                         {{ strtoupper(substr($listeUser[$i]->name, 0, 1)) }}
                                                     </div>
                                                     <span>{{ $listeUser[$i]->name }}</span>
@@ -95,7 +97,7 @@
                                             <td class="py-3">
                                                 <div class="small">
                                                     <a href="mailto:{{ $listeUser[$i]->email }}" class="text-primary text-decoration-none d-block">
-                                                        <i class="lnr lnr-envelope mr-1"></i> {{ $listeUser[$i]->email }}
+                                                        <i class="lnr lnr-envelope mr-1"></i> {{ $listeUser[$i]->email }} / 
                                                     </a>
                                                     <span class="text-muted d-block mt-1">
                                                         Login : <code>{{ $listeUser[$i]->username }}</code>
@@ -103,9 +105,8 @@
                                                 </div>
                                             </td>
                                             <td class="py-3 text-center">
-                                                <form id="perm-form-{{ $listeUser[$i]->id }}" action="{{ route('RenPermUser', 'mode=Perm&idUser='.$listeUser[$i]->id) }}" method="post" style="display:none;">
+                                                <form id="perm-form-{{ $listeUser[$i]->id }}" action="{{ route('RenPermUser', ['mode' => 'Perm', 'idUser' => $listeUser[$i]->id]) }}" method="post" style="display:none;">
                                                     @csrf
-                                                    @method('GET')
                                                 </form>
 
                                                 @if(!$isCurrentUser)
@@ -120,13 +121,18 @@
                                                     @endif
                                                 @else
                                                     <span class="badge badge-primary px-3 py-2 font-weight-bold">
-                                                        <i class="fa fa-shield mr-1"></i> Super Admin
+                                                         <i class="fa fa-shield mr-1"></i> Super Admin
                                                     </span>
                                                 @endif
                                             </td>
+                                            <!--<td class="py-3 text-center">
+                                                <a href="{{ route('modifPro', ['mode' => 'Modifier', 'idUser' => $listeUser[$i]->id]) }}" class="btn btn-sm btn-light border text-primary" title="Modifier cet utilisateur">
+                                                    <i class="lnr lnr-pencil mr-1"></i> Modifier
+                                                </a>
+                                            </td>-->
                                             <td class="py-3 text-right pr-4">
                                                 @if(!$isCurrentUser)
-                                                    <form id="delete-form-{{ $listeUser[$i]->id }}" action="{{ route('SupUser', 'mode=Supprimer&idUser='.$listeUser[$i]->id) }}" method="post" style="display:none;">
+                                                    <form id="delete-form-{{ $listeUser[$i]->id }}" action="{{ route('SupUser', ['mode' => 'Supprimer', 'idUser' => $listeUser[$i]->id]) }}" method="post" style="display:none;">
                                                         @csrf
                                                         @method('DELETE')
                                                     </form>
